@@ -1,5 +1,10 @@
+%option noyywrap
+
 %{
 #include <stdio.h>
+#include <string.h>
+#include "bisonCompilador.tab.h"
+extern YYSTYPE yylval
 %}
 
 %option noyywrap
@@ -7,8 +12,8 @@
 %x comentario
 %x bloquefuncion
 
-letras [a-zA-Z]
-digitos [0-9]
+letras [a-zA-Z]+
+digitos [0-9]+
 
 caso caso
 cierto (cierto|verdadero)
@@ -57,17 +62,21 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 
 %%
 
-".." {fprintf(yyout, "%-60s %-30s %-15i\n", "AGREGACIÓN DE CADENAS: (\")", yytext , yylineno);}
+".." {fprintf(yyout, "%-60s %-30s %-15i\n", "AGREGACION DE CADENAS: (\")", yytext , yylineno);}
 "." {fprintf(yyout, "%-60s %-30s %-15i\n", "PUNTO: (\")", yytext , yylineno);}
 ":" {fprintf(yyout, "%-60s %-30s %-15i\n", "DOBLE PUNTO: (\")", yytext , yylineno);}
 "," {fprintf(yyout, "%-60s %-30s %-15i\n", "SEPARADOR: (\")", yytext , yylineno);}
 "=" {fprintf(yyout, "%-60s %-30s %-15i\n", "ASIGNACION: (\")", yytext , yylineno);}
-"+" {fprintf(yyout, "%-60s %-30s %-15i\n", "SUMA: (\")", yytext , yylineno);}
-"-" {fprintf(yyout, "%-60s %-30s %-15i\n", "RESTA: (\")", yytext , yylineno);}
-"*" {fprintf(yyout, "%-60s %-30s %-15i\n", "MULTIPLICACION: (\")", yytext , yylineno);}
-"/" {fprintf(yyout, "%-60s %-30s %-15i\n", "DIVISION: (\")", yytext , yylineno);}
+
+{digitos} yylval = atoi(yytext); return NUMERO;
+
+"+" return '+';
+"-" return '-';
+"*" return '*';
+"/" return '/';
+"^" return '^';
+
 "%" {fprintf(yyout, "%-60s %-30s %-15i\n", "MODULO: (\")", yytext , yylineno);}
-"^" {fprintf(yyout, "%-60s %-30s %-15i\n", "POTENCIA: (\")", yytext , yylineno);}
 
 "++" {fprintf(yyout, "%-60s %-30s %-15i\n", "INCREMENTACION: (\")", yytext , yylineno);}
 "--" {fprintf(yyout, "%-60s %-30s %-15i\n", "DECREMENTACION: (\")", yytext , yylineno);}
@@ -116,8 +125,8 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 \"[^\"]*\" {fprintf(yyout, "%-60s %-30s %-15i\n", "CADENA: (\")", yytext , yylineno);}
 \'[^\']*\' {fprintf(yyout, "%-60s %-30s %-15i\n", "CADENA: (\")", yytext , yylineno);}
 
-[+-]?{digitos}+ {fprintf(yyout, "%-60s %-30s %-15i\n", "NUMERO ENTERO: (\")", yytext , yylineno);}
-[+-]?{digitos}+(\.{digitos}+)? {fprintf(yyout, "%-60s %-30s %-15i\n", "NUMERO DECIMAL: (\")", yytext , yylineno);}
+[+-]?{digitos} {fprintf(yyout, "%-60s %-30s %-15i\n", "NUMERO ENTERO: (\")", yytext , yylineno);}
+[+-]?{digitos}(\.{digitos})? {fprintf(yyout, "%-60s %-30s %-15i\n", "NUMERO DECIMAL: (\")", yytext , yylineno);}
 
 .|\n {}
 
