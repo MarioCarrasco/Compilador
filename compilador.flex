@@ -3,8 +3,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "bisonCompilador.tab.h"
-extern YYSTYPE yylval
+#include "compilador.tab.h"
 %}
 
 %option noyywrap
@@ -70,11 +69,11 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 
 {digitos} yylval = atoi(yytext); return NUMERO;
 
-"+" return '+';
-"-" return '-';
-"*" return '*';
-"/" return '/';
-"^" return '^';
+"+" return SUMA;
+"-" return RESTA;
+"*" return MULT;
+"/" return DIV;
+"^" return POT;
 
 "%" {fprintf(yyout, "%-60s %-30s %-15i\n", "MODULO: (\")", yytext , yylineno);}
 
@@ -131,28 +130,3 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 .|\n {}
 
 %%
-
-int main(int argc,char *argv[]) {
-    char pathI[100] = "./pruebas/";
-    char pathO[100] = "./pruebas/";
-    strcat(pathI, argv[1]);
-    strcat(pathO, argv[2]);
-    
-    yyin = fopen(pathI, "rt");
-    yyout = fopen(pathO, "wt");
-    
-    if (yyin == NULL || yyout == NULL) {
-        printf("\nNo se puede abrir el archivo: %s\n", pathO);
-        exit(-1);
-    } else {
-        fprintf(yyout,"COMPILADORES Y LENGUAJES FORMALES\n\n\n");
-        fprintf(yyout,"%-60s %-30s %-15s \n", "TOKEN","LEXEMA", "LINEA");
-        fprintf(yyout,"%-60s %-30s %-15s \n", "-----","------", "------\n");
-        yylex();
-        printf("\nFichero %s generado correctamente!!\n", pathO);
-    }
-
-    fclose(yyin);
-    fclose(yyout);
-    return 0;
-}

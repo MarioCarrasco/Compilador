@@ -1,0 +1,149 @@
+Grammar
+
+    0 $accept: command $end
+
+    1 command: aritmetico
+
+    2 aritmetico: NUMERO SUMA NUMERO
+    3           | NUMERO RESTA NUMERO
+    4           | NUMERO MULT NUMERO
+    5           | NUMERO DIV NUMERO
+    6           | NUMERO POT NUMERO
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+SUMA (258) 2
+RESTA (259) 3
+MULT (260) 4
+DIV (261) 5
+POT (262) 6
+NUMERO (263) 2 3 4 5 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (9)
+    on left: 0
+command (10)
+    on left: 1, on right: 0
+aritmetico (11)
+    on left: 2 3 4 5 6, on right: 1
+
+
+state 0
+
+    0 $accept: . command $end
+
+    NUMERO  shift, and go to state 1
+
+    command     go to state 2
+    aritmetico  go to state 3
+
+
+state 1
+
+    2 aritmetico: NUMERO . SUMA NUMERO
+    3           | NUMERO . RESTA NUMERO
+    4           | NUMERO . MULT NUMERO
+    5           | NUMERO . DIV NUMERO
+    6           | NUMERO . POT NUMERO
+
+    SUMA   shift, and go to state 4
+    RESTA  shift, and go to state 5
+    MULT   shift, and go to state 6
+    DIV    shift, and go to state 7
+    POT    shift, and go to state 8
+
+
+state 2
+
+    0 $accept: command . $end
+
+    $end  shift, and go to state 9
+
+
+state 3
+
+    1 command: aritmetico .
+
+    $default  reduce using rule 1 (command)
+
+
+state 4
+
+    2 aritmetico: NUMERO SUMA . NUMERO
+
+    NUMERO  shift, and go to state 10
+
+
+state 5
+
+    3 aritmetico: NUMERO RESTA . NUMERO
+
+    NUMERO  shift, and go to state 11
+
+
+state 6
+
+    4 aritmetico: NUMERO MULT . NUMERO
+
+    NUMERO  shift, and go to state 12
+
+
+state 7
+
+    5 aritmetico: NUMERO DIV . NUMERO
+
+    NUMERO  shift, and go to state 13
+
+
+state 8
+
+    6 aritmetico: NUMERO POT . NUMERO
+
+    NUMERO  shift, and go to state 14
+
+
+state 9
+
+    0 $accept: command $end .
+
+    $default  accept
+
+
+state 10
+
+    2 aritmetico: NUMERO SUMA NUMERO .
+
+    $default  reduce using rule 2 (aritmetico)
+
+
+state 11
+
+    3 aritmetico: NUMERO RESTA NUMERO .
+
+    $default  reduce using rule 3 (aritmetico)
+
+
+state 12
+
+    4 aritmetico: NUMERO MULT NUMERO .
+
+    $default  reduce using rule 4 (aritmetico)
+
+
+state 13
+
+    5 aritmetico: NUMERO DIV NUMERO .
+
+    $default  reduce using rule 5 (aritmetico)
+
+
+state 14
+
+    6 aritmetico: NUMERO POT NUMERO .
+
+    $default  reduce using rule 6 (aritmetico)
