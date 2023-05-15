@@ -38,12 +38,8 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     SUMA = 258,
-     RESTA = 259,
-     MULT = 260,
-     DIV = 261,
-     POT = 262,
-     NUMERO = 263
+     NUMERO = 258,
+     VARIABLE = 259
    };
 #endif
 
