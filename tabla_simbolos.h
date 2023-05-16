@@ -2,7 +2,7 @@
 #include <string.h>
 
 struct simbolo{
-   char *nombre;
+   char nombre[100];
    int tipo;
    int valor;
 };
