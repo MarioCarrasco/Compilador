@@ -12,7 +12,7 @@
 
 S: expresion {printf(" El resultado es %d\n", $1); }
    | VARIABLE '=' expresion {    
-            if(existe_simbolo($3)==0){
+            if(existe_simbolo($1)==0){
                insertar_simbolo($1, 1, $3);
             }
             else{

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 struct simbolo{
@@ -40,6 +41,7 @@ void insertar_simbolo(char *nombre, int tipo, int valor) {
     strcpy(nuevo_simbolo->nombre, nombre);
     nuevo_simbolo->tipo = tipo;
     nuevo_simbolo->valor = valor;
-    memcpy(tabla_simbolos, nuevo_simbolo, num_simbolos * sizeof(struct simbolo));
+    tabla_simbolos[num_simbolos] = *nuevo_simbolo;
+
     num_simbolos++;
 }

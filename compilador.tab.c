@@ -1331,7 +1331,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 14 "compilador.y"
     {    
-            if(existe_simbolo((yyvsp[(3) - (3)]))==0){
+            if(existe_simbolo((yyvsp[(1) - (3)]))==1){
                insertar_simbolo((yyvsp[(1) - (3)]), 1, (yyvsp[(3) - (3)]));
             }
             else{
