@@ -1330,10 +1330,10 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 14 "compilador.y"
-    {    
+    {  
+            printf("expresion");  
             if(existe_simbolo((yyvsp[(1) - (3)]))==0){
                insertar_simbolo((yyvsp[(1) - (3)]), 1, (yyvsp[(3) - (3)]));
-               (yyval) = (yyvsp[(3) - (3)]);
             }
             else{
                fprintf (stderr, "Error en línea: Variable ya declarada\n");

@@ -13,9 +13,11 @@ int num_simbolos = 0;
 int buscar_simbolo(char *nombre) {
    for (int i = 0; i < num_simbolos; i++) {
       if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
+         printf(tabla_simbolos[i].nombre);
          return tabla_simbolos[i].valor;
       }
    }
+   printf("prueba");
    return 4;
 }
 
