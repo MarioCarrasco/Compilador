@@ -26,6 +26,7 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 "*" return '*';
 "/" return '/';
 "^" return '^';
+"=" return '=';
 
 \n {++yylineno; }
 . {}

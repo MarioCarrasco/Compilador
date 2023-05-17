@@ -406,8 +406,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    13,    13,    14,    25,    26,    27,    28,    29,    30,
-      31
+       0,    13,    13,    14,    27,    28,    29,    30,    31,    32,
+      33
 };
 #endif
 
@@ -1331,12 +1331,14 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 14 "compilador.y"
     {  
-            printf("expresion");  
+            printf("expresion1\n");    
             if(existe_simbolo((yyvsp[(1) - (3)]))==0){
-               insertar_simbolo((yyvsp[(1) - (3)]), 1, (yyvsp[(3) - (3)]));
+               printf("expresion2\n");    
+               insertar_simbolo((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)]));
+               printf("expresion3\n");    
             }
             else{
-               fprintf (stderr, "Error en línea: Variable ya declarada\n");
+               printf ("Error en línea: Variable ya declarada\n");
             }
          ;}
     break;
@@ -1344,56 +1346,56 @@ yyreduce:
   case 4:
 
 /* Line 1464 of yacc.c  */
-#line 25 "compilador.y"
+#line 27 "compilador.y"
     { (yyval) = (yyvsp[(1) - (1)]); ;}
     break;
 
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 26 "compilador.y"
-    { (yyval) = buscar_simbolo((yyvsp[(1) - (1)])); ;}
+#line 28 "compilador.y"
+    { printf("entra en variable\n"); (yyval) = buscar_simbolo((yyvsp[(1) - (1)])); ;}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 27 "compilador.y"
+#line 29 "compilador.y"
     { (yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]); ;}
     break;
 
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 28 "compilador.y"
+#line 30 "compilador.y"
     { (yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]); ;}
     break;
 
   case 8:
 
 /* Line 1464 of yacc.c  */
-#line 29 "compilador.y"
+#line 31 "compilador.y"
     { (yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]); ;}
     break;
 
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 30 "compilador.y"
+#line 32 "compilador.y"
     { (yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]); ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 31 "compilador.y"
+#line 33 "compilador.y"
     { (yyval) = (yyvsp[(1) - (3)]) ^ (yyvsp[(3) - (3)]); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1397 "compilador.tab.c"
+#line 1399 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1605,7 +1607,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 35 "compilador.y"
+#line 37 "compilador.y"
 
 
 main()
