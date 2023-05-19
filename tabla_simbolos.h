@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
-struct simbolo{
-   char nombre[100];
+typedef struct {
+   char *nombre;
+   char *tipo;
    int valor;
-};
+}simbolo;
 
-struct simbolo tabla_simbolos[100];
-int num_simbolos = 0;
-
-int buscar_simbolo(char *nombre) {
+int buscar_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
    printf("buscando simbolo\n");
    for (int i = 0; i < num_simbolos; i++) {
       if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
@@ -21,7 +20,7 @@ int buscar_simbolo(char *nombre) {
    return 0;
 }
 
-int existe_simbolo(char *nombre) {
+int existe_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
    for (int i = 0; i < num_simbolos; i++) {
       if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
          return 1;
@@ -30,7 +29,7 @@ int existe_simbolo(char *nombre) {
    return 0;
 }
 
-void insertar_simbolo(char *nombre, int valor) {
+void insertar_simbolo(char *nombre, int valor, simbolo* tabla_simbolos, int num_simbolos) {
     printf("Intentando insertar\n");    
     // Verificar si el símbolo ya existe
     for (int i = 0; i < num_simbolos; i++) {
@@ -43,14 +42,14 @@ void insertar_simbolo(char *nombre, int valor) {
     }
     printf("No exixte se va a insertar\n");
     // Si el símbolo no existe, agregarlo a la tabla de símbolos
-    struct simbolo nuevo_simbolo[100];
+    simbolo nuevo_simbolo[100];
     printf("struct creado\n");
-    strcpy((*nuevo_simbolo).nombre, nombre);
-    printf("nombre asignado\n");
-    (*nuevo_simbolo).valor = valor;
-    printf("valor asignado\n");
     tabla_simbolos[num_simbolos] = *nuevo_simbolo;
     printf("insertando\n");
+    tabla_simbolos[num_simbolos].valor = valor;
+    printf("valor asignado\n");
+    strcpy(tabla_simbolos[num_simbolos].nombre, nombre);
+    printf("nombre asignado\n");
     num_simbolos++;
     printf("simbolo insertado\n");
 }
