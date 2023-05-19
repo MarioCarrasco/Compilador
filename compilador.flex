@@ -18,8 +18,8 @@ variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 
 %%
 
-{digitos} yylval = atoi(yytext); return NUMERO;
-{variable} yylval = atoi(yytext); return VARIABLE;
+{digitos} {yylval = atoi(yytext); return NUMERO;}
+{variable} {yylval = strdup(yytext); return VARIABLE;}
 
 "+" return '+';
 "-" return '-';

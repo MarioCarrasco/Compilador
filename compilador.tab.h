@@ -38,8 +38,8 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NUMERO = 258,
-     VARIABLE = 259
+     VARIABLE = 258,
+     NUMERO = 259
    };
 #endif
 
