@@ -23,7 +23,7 @@ void generarCodigoIntermedio(ASTNode* node) {
     }
 
     // Generar código intermedio para el nodo actual
-    switch (node->type) {
+    switch (*node->type) {
         case 'suma':
             fprintf(yyout, "ADD %d, %d\n", node->left, node->right);
             break;

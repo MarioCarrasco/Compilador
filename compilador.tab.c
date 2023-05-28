@@ -1394,7 +1394,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 67 "compilador.y"
-    { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", *(yyvsp[(1) - (3)]), *(yyvsp[(3) - (3)])); (yyval) = createASTNode("suma", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); (yyval) = createASTNode("suma", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 12:
@@ -1640,7 +1640,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 75 "compilador.y"
+#line 74 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;

@@ -64,13 +64,12 @@ expresion: NUMERO { $$ = createASTNode("numero", $1, NULL, NULL); }
                // cazar error de variable no declarada
             }
          }
-         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", *$1, *$3); $$ = createASTNode("suma", $1+$3, $1, $3); }
+         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1+$3, $1, $3); }
          | expresion '-' expresion { $$ = createASTNode("resta", $1-$3, $1, $3); }
          | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1*$3, $1, $3); }
          | expresion '/' expresion { $$ = createASTNode("division", $1/$3, $1, $3); }
          | expresion '^' expresion { $$ = createASTNode("potencia", $1^$3, $1, $3); }
       ;
-
 
 %%
 extern FILE* yyin;
