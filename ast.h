@@ -1,3 +1,4 @@
+extern FILE* yyout;
 
 //estructura de los nodos
 typedef struct {
@@ -6,22 +7,6 @@ typedef struct {
     struct ASTNode* left;   // Puntero al hijo izquierdo
     struct ASTNode* right;  // Puntero al hijo derecho
 } ASTNode;
-
-//estructura de la lista enlazada de los nodos
-typedef struct {
-    NodoAST* cabeza; // Puntero al primer nodo de la lista
-    NodoAST* cola;   // Puntero al último nodo de la lista
-} ASTList;
-
-void agregarNodoAST(ASTList* lista, ASTNode* nodo) {
-    if (lista->cabeza == NULL) {
-        lista->cabeza = nodo;
-        lista->cola = nodo;
-    } else {
-        lista->cola->siguiente = nodo;
-        lista->cola = nodo;
-    }
-}
 
 ASTNode* createASTNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = malloc(sizeof(ASTNode));
@@ -32,7 +17,7 @@ ASTNode* createASTNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     return node;
 }
 
-void generarCodigoIntermedio(TreeNode* node) {
+void generarCodigoIntermedio(ASTNode* node) {
     if (node == NULL) {
         return;
     }
@@ -40,22 +25,22 @@ void generarCodigoIntermedio(TreeNode* node) {
     // Generar código intermedio para el nodo actual
     switch (node->type) {
         case 'suma':
-            printf("ADD %d, %d\n", node->left, node->right);
+            fprintf(yyout, "ADD %d, %d\n", node->left, node->right);
             break;
         case 'resta':
-            printf("SUB %d, %d\n", node->left, node->right);
+            fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
             break;
         case 'multiplicacion':
-            printf("IMUL %d, %d\n", node->left, node->right);
+            fprintf(yyout, "IMUL %d, %d\n", node->left, node->right);
             break;
         case 'division':
-            printf("SUB %d, %d\n", node->left, node->right);
+            fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
             break;
         case 'potencia':
-            printf("SUB %d, %d\n", node->left, node->right);
+            fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
             break;
         default:
-            printf("ERROR: Operación inválida\n");
+            fprintf(yyout, "ERROR: Operación inválida\n");
             exit(1);
     }
 

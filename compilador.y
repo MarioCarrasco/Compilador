@@ -4,6 +4,8 @@
 #include "tabla_simbolos.h"
 #include "ast.h"
 
+extern yylineno;
+
 simbolo tabla_simbolos[100];
 int num_simbolos = 0;
 %}
@@ -58,35 +60,33 @@ expresion: NUMERO { $$ = createASTNode("numero", $1, NULL, NULL); }
                $$ = createASTNode("variable", $1, $1, buscar_simbolo($1,tabla_simbolos,num_simbolos));
             }
             else{
-               printf("Error: variable '%s' no declarada\n", $1);
+               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
                // cazar error de variable no declarada
             }
          }
-         | expresion '+' expresion { printf("Entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1+$3, $1, $3); }
-         | expresion '-' expresion { $$ = createASTNode("resta", $1+$3, $1, $3); }
-         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1+$3, $1, $3); }
-         | expresion '/' expresion { $$ = createASTNode("division", $1+$3, $1, $3); }
-         | expresion '^' expresion { $$ = createASTNode("potencia", $1+$3, $1, $3); }
+         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", *$1, *$3); $$ = createASTNode("suma", $1+$3, $1, $3); }
+         | expresion '-' expresion { $$ = createASTNode("resta", $1-$3, $1, $3); }
+         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1*$3, $1, $3); }
+         | expresion '/' expresion { $$ = createASTNode("division", $1/$3, $1, $3); }
+         | expresion '^' expresion { $$ = createASTNode("potencia", $1^$3, $1, $3); }
       ;
 
 
 %%
+extern FILE* yyin;
+extern FILE* yyout;
+
 main()
 {
    char pathI[100] = "./CodigoEntrada/in.txt";
-   yyin = fopen(pathI, "rt");
-   if (yyin == NULL) {
-      printf("\nNo se puede abrir el archivo de entrada");
-      exit(-1);
-   }else{
-      yylex();
-   }
-   fclose(yyin);
+   char pathO[100] = "./CodigoEntrada/out.txt";
 
-   return yyparse();
+   yyin = fopen(pathI, "rt");
+   yyout = fopen(pathO, "wt");
+
+   yyparse();
+   fclose(pathI);
+   fclose(pathO);
 }
 
-
-yyerror()
-{ 
-} 
+yyerror(){} 

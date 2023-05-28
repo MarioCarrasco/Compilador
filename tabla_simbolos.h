@@ -12,7 +12,7 @@ int buscar_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
    printf("buscando simbolo\n");
    for (int i = 0; i < num_simbolos; i++) {
       if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
-         printf("encontrado");
+         printf("encontrado\n");
          return tabla_simbolos[i].valor;
       }
    }

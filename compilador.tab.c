@@ -74,12 +74,14 @@
 #include "tabla_simbolos.h"
 #include "ast.h"
 
+extern yylineno;
+
 simbolo tabla_simbolos[100];
 int num_simbolos = 0;
 
 
 /* Line 189 of yacc.c  */
-#line 83 "compilador.tab.c"
+#line 85 "compilador.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -125,7 +127,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 129 "compilador.tab.c"
+#line 131 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -411,8 +413,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    19,    19,    20,    21,    22,    23,    26,    27,    55,
-      56,    65,    66,    67,    68,    69
+       0,    21,    21,    22,    23,    24,    25,    28,    29,    57,
+      58,    67,    68,    69,    70,    71
 };
 #endif
 
@@ -1330,14 +1332,14 @@ yyreduce:
         case 7:
 
 /* Line 1464 of yacc.c  */
-#line 26 "compilador.y"
+#line 28 "compilador.y"
     {printf(" El resultado es %d\n", (yyvsp[(1) - (1)])); ;}
     break;
 
   case 8:
 
 /* Line 1464 of yacc.c  */
-#line 27 "compilador.y"
+#line 29 "compilador.y"
     {  
             if(existe_simbolo((yyvsp[(1) - (3)]),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
                printf("Nuevo simbolo\n"); 
@@ -1369,20 +1371,20 @@ yyreduce:
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 55 "compilador.y"
+#line 57 "compilador.y"
     { (yyval) = createASTNode("numero", (yyvsp[(1) - (1)]), NULL, NULL); ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 56 "compilador.y"
+#line 58 "compilador.y"
     { printf("entra en variable\n"); 
             if(existe_simbolo((yyvsp[(1) - (1)]), tabla_simbolos, num_simbolos)==1){
                (yyval) = createASTNode("variable", (yyvsp[(1) - (1)]), (yyvsp[(1) - (1)]), buscar_simbolo((yyvsp[(1) - (1)]),tabla_simbolos,num_simbolos));
             }
             else{
-               printf("Error: variable '%s' no declarada\n", (yyvsp[(1) - (1)]));
+               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, (yyvsp[(1) - (1)]));
                // cazar error de variable no declarada
             }
          ;}
@@ -1391,42 +1393,42 @@ yyreduce:
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 65 "compilador.y"
-    { printf("Entra en la suma: %d + %d\n", (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); (yyval) = createASTNode("suma", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+#line 67 "compilador.y"
+    { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", *(yyvsp[(1) - (3)]), *(yyvsp[(3) - (3)])); (yyval) = createASTNode("suma", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 66 "compilador.y"
-    { (yyval) = createASTNode("resta", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+#line 68 "compilador.y"
+    { (yyval) = createASTNode("resta", (yyvsp[(1) - (3)])-(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 67 "compilador.y"
-    { (yyval) = createASTNode("multiplicacion", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+#line 69 "compilador.y"
+    { (yyval) = createASTNode("multiplicacion", (yyvsp[(1) - (3)])*(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 68 "compilador.y"
-    { (yyval) = createASTNode("division", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+#line 70 "compilador.y"
+    { (yyval) = createASTNode("division", (yyvsp[(1) - (3)])/(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 69 "compilador.y"
-    { (yyval) = createASTNode("potencia", (yyvsp[(1) - (3)])+(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+#line 71 "compilador.y"
+    { (yyval) = createASTNode("potencia", (yyvsp[(1) - (3)])^(yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1430 "compilador.tab.c"
+#line 1432 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1638,25 +1640,22 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 73 "compilador.y"
+#line 75 "compilador.y"
+
+extern FILE* yyin;
+extern FILE* yyout;
 
 main()
 {
    char pathI[100] = "./CodigoEntrada/in.txt";
-   yyin = fopen(pathI, "rt");
-   if (yyin == NULL) {
-      printf("\nNo se puede abrir el archivo de entrada");
-      exit(-1);
-   }else{
-      yylex();
-   }
-   fclose(yyin);
+   char pathO[100] = "./CodigoEntrada/out.txt";
 
-   return yyparse();
+   yyin = fopen(pathI, "rt");
+   yyout = fopen(pathO, "wt");
+
+   yyparse();
+   fclose(pathI);
+   fclose(pathO);
 }
 
-
-yyerror()
-{ 
-} 
-
+yyerror(){} 
