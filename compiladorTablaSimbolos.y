@@ -2,7 +2,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "tabla_simbolos.h"
-#include "ast.h"
 
 simbolo tabla_simbolos[100];
 int num_simbolos = 0;
@@ -48,41 +47,22 @@ sentencia: expresion {printf(" El resultado es %d\n", $1); }
                   }
                }
             }
-            $$ = createASTNode("asignacion", $1, $1, $3);
          }
       ;
 
-expresion: NUMERO { $$ = createASTNode("numero", $1, NULL, NULL); }
-         | VARIABLE { printf("entra en variable\n"); 
-            if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
-               $$ = createASTNode("variable", $1, $1, buscar_simbolo($1,tabla_simbolos,num_simbolos));
-            }
-            else{
-               printf("Error: variable '%s' no declarada\n", $1);
-               // cazar error de variable no declarada
-            }
-         }
-         | expresion '+' expresion { printf("Entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1+$3, $1, $3); }
-         | expresion '-' expresion { $$ = createASTNode("resta", $1+$3, $1, $3); }
-         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1+$3, $1, $3); }
-         | expresion '/' expresion { $$ = createASTNode("division", $1+$3, $1, $3); }
-         | expresion '^' expresion { $$ = createASTNode("potencia", $1+$3, $1, $3); }
+expresion: NUMERO { $$ = $1; }
+         | VARIABLE { printf("entra en variable\n"); $$ = buscar_simbolo($1,tabla_simbolos,num_simbolos); }
+         | expresion '+' expresion { printf("Entra en la suma: %d + %d\n", $1, $3); $$ = $1 + $3; }
+         | expresion '-' expresion { $$ = $1 - $3; }
+         | expresion '*' expresion { $$ = $1 * $3; }
+         | expresion '/' expresion { $$ = $1 * $3; }
+         | expresion '^' expresion { $$ = $1 ^ $3; }
       ;
 
 
 %%
 main()
 {
-   char pathI[100] = "./CodigoEntrada/in.txt";
-   yyin = fopen(pathI, "rt");
-   if (yyin == NULL) {
-      printf("\nNo se puede abrir el archivo de entrada");
-      exit(-1);
-   }else{
-      yylex();
-   }
-   fclose(yyin);
-
    return yyparse();
 }
 
