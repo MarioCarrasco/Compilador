@@ -2,33 +2,27 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "tabla_simbolos.h"
-#include "ast.c"
+#include "ast.h"
 
 extern yylineno;
-void yyerror(const char *s);
 
 simbolo tabla_simbolos[100];
 int num_simbolos = 0;
 %}
 
 %union {
-   int vInt;
-   char* sVal;
-   float fVal;
-      struct valores{
-         char* nombre;
-         int valInt;
-         double valDoub;
-         char* tipo;
-         struct ASTNode* nodo;
-      } valores;
+   double val;
+   int valInt;
+   char* string;
 }
 
-%token <sVal> VARIABLE '='
-%token <vInt> NUMERO
+%token VARIABLE '='
+%token NUMERO
 
-%type <valores> sentencia
-%type <valores> expresion
+%type <valInt> NUMERO
+%type <string> VARIABLE
+%type <string> expresion
+%type <string> sentencia
 
 %left '+' '-'
 %left '*' '/'
@@ -36,21 +30,21 @@ int num_simbolos = 0;
 %start S
 %%
 
-S: expresion { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
+S: expresion
    |sentencia
    |expresion S
    |sentencia S
    |
    ;
 
-sentencia: expresion {printf(" El resultado es %d\n", $1.valInt); }
+sentencia: expresion {printf(" El resultado es %d\n", $1); }
    | VARIABLE '=' expresion {  
-            printf("Tipo de la expresion: %s \n", $3.tipo);
+            printf("El tipo de %d es %s\n", $3, $3);
             if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
                printf("Nuevo simbolo\n"); 
                tabla_simbolos[num_simbolos].nombre = $1;
                tabla_simbolos[num_simbolos].tipo = "entero";
-               tabla_simbolos[num_simbolos].valor = $3.valInt;
+               tabla_simbolos[num_simbolos].valor = $3;
                printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
                printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
                printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
@@ -62,35 +56,32 @@ sentencia: expresion {printf(" El resultado es %d\n", $1.valInt); }
                   if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
                      tabla_simbolos[num_simbolos].nombre = $1;
                      tabla_simbolos[num_simbolos].tipo = "entero";
-                     tabla_simbolos[num_simbolos].valor = $3.valInt;
+                     tabla_simbolos[num_simbolos].valor = $3;
                      printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].nombre);
                      printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].tipo);
                      printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[num_simbolos].valor);
                   }
                }
             }
-            struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
-            $$.nodo = createASTNode("asignacion", -1, -1, temp, $3.nodo);
+            $$ = createASTNode("asignacion", $1, $1, $3);
          }
       ;
 
-expresion: NUMERO { $$.valInt = $1; $$.nodo = createASTNode("numero", $1, -1, NULL, NULL); $$.tipo = "entero"; /*Añadir opcion para float*/}
+expresion: NUMERO { $$ = createASTNode("numero", $1, NULL, NULL); }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
-               int temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
-               $$.valInt = temp2;
-               $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               $$ = createASTNode("variable", $1, $1, buscar_simbolo($1,tabla_simbolos,num_simbolos));
             }
             else{
-               fprintf(yyout, "Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
+               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
                // cazar error de variable no declarada
             }
          }
-         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1.valInt, $3.valInt); $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '-' expresion { $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '*' expresion { $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '/' expresion { $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '^' expresion { $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo); }
+         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1+$3, $1, $3); }
+         | expresion '-' expresion { $$ = createASTNode("resta", $1-$3, $1, $3); }
+         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1*$3, $1, $3); }
+         | expresion '/' expresion { $$ = createASTNode("division", $1/$3, $1, $3); }
+         | expresion '^' expresion { $$ = createASTNode("potencia", $1^$3, $1, $3); }
       ;
 
 %%
@@ -110,7 +101,4 @@ main()
    fclose(pathO);
 }
 
-void yyerror(const char *s)
-{ 
-    fprintf(stderr, "Error");
-}
+yyerror(){} 
