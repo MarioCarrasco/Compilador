@@ -11,19 +11,18 @@ int num_simbolos = 0;
 %}
 
 %union {
-      struct {
-         int valInt;
-         double valDoub;
-         char* tipo;
-         ASTNode* nodo;
-      } valores;
+   double val;
+   int valInt;
+   char* string;
 }
 
-%token <valores> VARIABLE '='
-%token <valores> NUMERO
+%token VARIABLE '='
+%token NUMERO
 
-%type <valores> sentencia
-%type <valores> expresion
+%type <valInt> NUMERO
+%type <string> VARIABLE
+%type <string> expresion
+%type <string> sentencia
 
 %left '+' '-'
 %left '*' '/'
@@ -40,6 +39,7 @@ S: expresion
 
 sentencia: expresion {printf(" El resultado es %d\n", $1); }
    | VARIABLE '=' expresion {  
+            printf("El tipo de %d es %s\n", $3, $3);
             if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
                printf("Nuevo simbolo\n"); 
                tabla_simbolos[num_simbolos].nombre = $1;
@@ -63,25 +63,25 @@ sentencia: expresion {printf(" El resultado es %d\n", $1); }
                   }
                }
             }
-            $$ = createASTNode("asignacion", $1, $3);
+            $$ = createASTNode("asignacion", $1, $1, $3);
          }
       ;
 
-expresion: NUMERO { $$ = $1; }
+expresion: NUMERO { $$ = createASTNode("numero", $1, NULL, NULL); }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
-               $$ = buscar_simbolo($1,tabla_simbolos,num_simbolos);
+               $$ = createASTNode("variable", $1, $1, buscar_simbolo($1,tabla_simbolos,num_simbolos));
             }
             else{
                printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
                // cazar error de variable no declarada
             }
          }
-         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1, $3); }
-         | expresion '-' expresion { $$ = createASTNode("resta", $1, $3); }
-         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1, $3); }
-         | expresion '/' expresion { $$ = createASTNode("division", $1, $3); }
-         | expresion '^' expresion { $$ = createASTNode("potencia", $1, $3); }
+         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1, $3); $$ = createASTNode("suma", $1+$3, $1, $3); }
+         | expresion '-' expresion { $$ = createASTNode("resta", $1-$3, $1, $3); }
+         | expresion '*' expresion { $$ = createASTNode("multiplicacion", $1*$3, $1, $3); }
+         | expresion '/' expresion { $$ = createASTNode("division", $1/$3, $1, $3); }
+         | expresion '^' expresion { $$ = createASTNode("potencia", $1^$3, $1, $3); }
       ;
 
 %%
