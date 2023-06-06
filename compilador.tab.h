@@ -50,19 +50,23 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 13 "compilador.y"
+#line 14 "compilador.y"
 
-      struct {
+   int vInt;
+   char* sVal;
+   float fVal;
+      struct valores{
+         char* nombre;
          int valInt;
          double valDoub;
          char* tipo;
-         ASTNode* nodo;
+         struct ASTNode* nodo;
       } valores;
 
 
 
 /* Line 1685 of yacc.c  */
-#line 66 "compilador.tab.h"
+#line 70 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

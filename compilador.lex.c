@@ -783,12 +783,12 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 21 "compilador.flex"
-{yylval = atoi(yytext); return NUMERO;}
+{yylval.vInt = atoi(yytext); return NUMERO;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 22 "compilador.flex"
-{yylval = strdup(yytext); return VARIABLE;}
+{yylval.sVal = strdup(yytext); return VARIABLE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP

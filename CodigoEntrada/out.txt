@@ -1,0 +1,3 @@
+ADD 7, 4
+ERROR: Operación 'numero' inválida en la linea 2
+ERROR: Operación 'variable' inválida en la linea 2

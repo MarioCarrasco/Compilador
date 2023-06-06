@@ -72,16 +72,17 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "tabla_simbolos.h"
-#include "ast.h"
+#include "ast.c"
 
 extern yylineno;
+void yyerror(const char *s);
 
 simbolo tabla_simbolos[100];
 int num_simbolos = 0;
 
 
 /* Line 189 of yacc.c  */
-#line 85 "compilador.tab.c"
+#line 86 "compilador.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -120,19 +121,23 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 13 "compilador.y"
+#line 14 "compilador.y"
 
-      struct {
+   int vInt;
+   char* sVal;
+   float fVal;
+      struct valores{
+         char* nombre;
          int valInt;
          double valDoub;
          char* tipo;
-         ASTNode* nodo;
+         struct ASTNode* nodo;
       } valores;
 
 
 
 /* Line 214 of yacc.c  */
-#line 136 "compilador.tab.c"
+#line 141 "compilador.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -144,7 +149,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 148 "compilador.tab.c"
+#line 153 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -430,8 +435,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    34,    34,    35,    36,    37,    38,    41,    42,    70,
-      71,    80,    81,    82,    83,    84
+       0,    39,    39,    40,    41,    42,    43,    46,    47,    77,
+      78,    89,    90,    91,    92,    93
 };
 #endif
 
@@ -1346,23 +1351,31 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 7:
+        case 2:
 
 /* Line 1464 of yacc.c  */
-#line 41 "compilador.y"
-    {printf(" El resultado es %d\n", (yyvsp[(1) - (1)].valores)); ;}
+#line 39 "compilador.y"
+    { generarCodigoIntermedio((yyvsp[(1) - (1)].valores).nodo);/*llamar al método generarCodigoIntermedio()*/;}
+    break;
+
+  case 7:
+
+/* Line 1464 of yacc.c  */
+#line 46 "compilador.y"
+    {printf(" El resultado es %d\n", (yyvsp[(1) - (1)].valores).valInt); ;}
     break;
 
   case 8:
 
 /* Line 1464 of yacc.c  */
-#line 42 "compilador.y"
+#line 47 "compilador.y"
     {  
-            if(existe_simbolo((yyvsp[(1) - (3)].valores),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+            printf("Tipo de la expresion: %s \n", (yyvsp[(3) - (3)].valores).tipo);
+            if(existe_simbolo((yyvsp[(1) - (3)].sVal),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
                printf("Nuevo simbolo\n"); 
-               tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].valores);
+               tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].sVal);
                tabla_simbolos[num_simbolos].tipo = "entero";
-               tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores);
+               tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores).valInt;
                printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
                printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
                printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
@@ -1371,37 +1384,40 @@ yyreduce:
             else{ // exixte simbolo, se actualiza
                printf("Actualizamos simbolo\n"); 
                for (int i = 0; i < num_simbolos; i++) {
-                  if (strcmp(tabla_simbolos[i].nombre, (yyvsp[(1) - (3)].valores)) == 0) {
-                     tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].valores);
+                  if (strcmp(tabla_simbolos[i].nombre, (yyvsp[(1) - (3)].sVal)) == 0) {
+                     tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].sVal);
                      tabla_simbolos[num_simbolos].tipo = "entero";
-                     tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores);
+                     tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores).valInt;
                      printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].nombre);
                      printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].tipo);
                      printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[num_simbolos].valor);
                   }
                }
             }
-            (yyval.valores) = createASTNode("asignacion", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores));
+            struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
+            (yyval.valores).nodo = createASTNode("asignacion", -1, -1, temp, (yyvsp[(3) - (3)].valores).nodo);
          ;}
     break;
 
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 70 "compilador.y"
-    { (yyval.valores) = (yyvsp[(1) - (1)].valores); ;}
+#line 77 "compilador.y"
+    { (yyval.valores).valInt = (yyvsp[(1) - (1)].vInt); (yyval.valores).nodo = createASTNode("numero", (yyvsp[(1) - (1)].vInt), -1, NULL, NULL); (yyval.valores).tipo = "entero"; /*Añadir opcion para float*/;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 71 "compilador.y"
+#line 78 "compilador.y"
     { printf("entra en variable\n"); 
-            if(existe_simbolo((yyvsp[(1) - (1)].valores), tabla_simbolos, num_simbolos)==1){
-               (yyval.valores) = buscar_simbolo((yyvsp[(1) - (1)].valores),tabla_simbolos,num_simbolos);
+            if(existe_simbolo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)==1){
+               int temp2 = buscar_simbolo((yyvsp[(1) - (1)].sVal),tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+               (yyval.valores).valInt = temp2;
+               (yyval.valores).nodo = createASTNode("variable", temp2, -1, NULL, NULL);
             }
             else{
-               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, (yyvsp[(1) - (1)].valores));
+               fprintf(yyout, "Error en la linea %s: variable '%s' no declarada\n",yylineno, (yyvsp[(1) - (1)].sVal));
                // cazar error de variable no declarada
             }
          ;}
@@ -1410,42 +1426,42 @@ yyreduce:
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 80 "compilador.y"
-    { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); (yyval.valores) = createASTNode("suma", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); ;}
+#line 89 "compilador.y"
+    { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt); (yyval.valores).nodo = createASTNode("suma", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo); ;}
     break;
 
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 81 "compilador.y"
-    { (yyval.valores) = createASTNode("resta", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); ;}
+#line 90 "compilador.y"
+    { (yyval.valores).nodo = createASTNode("resta", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo); ;}
     break;
 
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 82 "compilador.y"
-    { (yyval.valores) = createASTNode("multiplicacion", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); ;}
+#line 91 "compilador.y"
+    { (yyval.valores).nodo = createASTNode("multiplicacion", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo); ;}
     break;
 
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 83 "compilador.y"
-    { (yyval.valores) = createASTNode("division", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); ;}
+#line 92 "compilador.y"
+    { (yyval.valores).nodo = createASTNode("division", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo); ;}
     break;
 
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 84 "compilador.y"
-    { (yyval.valores) = createASTNode("potencia", (yyvsp[(1) - (3)].valores), (yyvsp[(3) - (3)].valores)); ;}
+#line 93 "compilador.y"
+    { (yyval.valores).nodo = createASTNode("potencia", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1449 "compilador.tab.c"
+#line 1465 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1657,7 +1673,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 87 "compilador.y"
+#line 96 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;
@@ -1675,4 +1691,7 @@ main()
    fclose(pathO);
 }
 
-yyerror(){} 
+void yyerror(const char *s)
+{ 
+    fprintf(stderr, "Error");
+}
