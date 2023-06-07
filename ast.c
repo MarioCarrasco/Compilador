@@ -33,7 +33,7 @@ void generarCodigoIntermedio(struct ASTNode* node) {
 
     if (strcmp(node->type, "suma") == 0) {
             printf("\nentra en suma ");
-            printf("%d\n",node->type);
+            printf("%s\n",node->type);
             fprintf(yyout, "ADD %d, %d\n", node->left->valInt, node->right->valInt);
     }
     else if (strcmp(node->type, "resta") == 0) {
