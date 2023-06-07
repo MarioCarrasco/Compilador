@@ -39,7 +39,8 @@
       know about them.  */
    enum yytokentype {
      VARIABLE = 258,
-     NUMERO = 259
+     NUMERO = 259,
+     COMENTARIO = 260
    };
 #endif
 
@@ -66,7 +67,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 70 "compilador.tab.h"
+#line 71 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

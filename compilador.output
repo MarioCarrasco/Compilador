@@ -1,321 +1,307 @@
-Rules useless in parser due to conflicts
-
-    6 sentencia: expresion
-
-
-State 4 conflicts: 1 reduce/reduce
-State 5 conflicts: 2 shift/reduce, 1 reduce/reduce
-
-
 Grammar
 
     0 $accept: S $end
 
-    1 S: expresion
-    2  | sentencia
-    3  | expresion S
-    4  | sentencia S
-    5  | /* empty */
+    1 S: sentencia
 
-    6 sentencia: expresion
-    7          | VARIABLE '=' expresion
+    2 sentencia: sentencias
+    3          | sentencia sentencias
 
-    8 expresion: NUMERO
-    9          | VARIABLE
-   10          | expresion '+' expresion
-   11          | expresion '-' expresion
-   12          | expresion '*' expresion
-   13          | expresion '/' expresion
-   14          | expresion '^' expresion
+    4 sentencias: expresion
+    5           | COMENTARIO
+    6           | VARIABLE '=' expresion
+
+    7 expresion: NUMERO
+    8          | VARIABLE
+    9          | expresion '+' expresion
+   10          | expresion '-' expresion
+   11          | expresion '*' expresion
+   12          | expresion '/' expresion
+   13          | expresion '^' expresion
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'*' (42) 12
-'+' (43) 10
-'-' (45) 11
-'/' (47) 13
-'=' (61) 7
-'^' (94) 14
+'*' (42) 11
+'+' (43) 9
+'-' (45) 10
+'/' (47) 12
+'=' (61) 6
+'^' (94) 13
 error (256)
-VARIABLE (258) 7 9
-NUMERO (259) 8
+VARIABLE (258) 6 8
+NUMERO (259) 7
+COMENTARIO (260) 5
 
 
 Nonterminals, with rules where they appear
 
-$accept (11)
+$accept (12)
     on left: 0
-S (12)
-    on left: 1 2 3 4 5, on right: 0 3 4
-sentencia (13)
-    on left: 6 7, on right: 2 4
-expresion (14)
-    on left: 8 9 10 11 12 13 14, on right: 1 3 6 7 10 11 12 13 14
+S (13)
+    on left: 1, on right: 0
+sentencia (14)
+    on left: 2 3, on right: 1 3
+sentencias (15)
+    on left: 4 5 6, on right: 2 3
+expresion (16)
+    on left: 7 8 9 10 11 12 13, on right: 4 6 9 10 11 12 13
 
 
 state 0
 
     0 $accept: . S $end
 
-    VARIABLE  shift, and go to state 1
-    NUMERO    shift, and go to state 2
+    VARIABLE    shift, and go to state 1
+    NUMERO      shift, and go to state 2
+    COMENTARIO  shift, and go to state 3
 
-    $default  reduce using rule 5 (S)
-
-    S          go to state 3
-    sentencia  go to state 4
-    expresion  go to state 5
+    S           go to state 4
+    sentencia   go to state 5
+    sentencias  go to state 6
+    expresion   go to state 7
 
 
 state 1
 
-    7 sentencia: VARIABLE . '=' expresion
-    9 expresion: VARIABLE .
+    6 sentencias: VARIABLE . '=' expresion
+    8 expresion: VARIABLE .
 
-    '='  shift, and go to state 6
-
-    $default  reduce using rule 9 (expresion)
-
-
-state 2
-
-    8 expresion: NUMERO .
+    '='  shift, and go to state 8
 
     $default  reduce using rule 8 (expresion)
 
 
+state 2
+
+    7 expresion: NUMERO .
+
+    $default  reduce using rule 7 (expresion)
+
+
 state 3
 
-    0 $accept: S . $end
+    5 sentencias: COMENTARIO .
 
-    $end  shift, and go to state 7
+    $default  reduce using rule 5 (sentencias)
 
 
 state 4
 
-    2 S: sentencia .
-    4  | sentencia . S
+    0 $accept: S . $end
 
-    VARIABLE  shift, and go to state 1
-    NUMERO    shift, and go to state 2
-
-    $end      reduce using rule 2 (S)
-    $end      [reduce using rule 5 (S)]
-    $default  reduce using rule 2 (S)
-
-    S          go to state 8
-    sentencia  go to state 4
-    expresion  go to state 5
+    $end  shift, and go to state 9
 
 
 state 5
 
-    1 S: expresion .
-    3  | expresion . S
-    6 sentencia: expresion .
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
+    1 S: sentencia .
+    3 sentencia: sentencia . sentencias
 
-    VARIABLE  shift, and go to state 1
-    NUMERO    shift, and go to state 2
-    '+'       shift, and go to state 9
-    '-'       shift, and go to state 10
-    '*'       shift, and go to state 11
-    '/'       shift, and go to state 12
-    '^'       shift, and go to state 13
+    VARIABLE    shift, and go to state 1
+    NUMERO      shift, and go to state 2
+    COMENTARIO  shift, and go to state 3
 
-    $end      reduce using rule 1 (S)
-    $end      [reduce using rule 5 (S)]
-    $end      [reduce using rule 6 (sentencia)]
-    VARIABLE  [reduce using rule 6 (sentencia)]
-    NUMERO    [reduce using rule 6 (sentencia)]
     $default  reduce using rule 1 (S)
 
-    S          go to state 14
-    sentencia  go to state 4
-    expresion  go to state 5
+    sentencias  go to state 10
+    expresion   go to state 7
 
 
 state 6
 
-    7 sentencia: VARIABLE '=' . expresion
+    2 sentencia: sentencias .
 
-    VARIABLE  shift, and go to state 15
-    NUMERO    shift, and go to state 2
-
-    expresion  go to state 16
+    $default  reduce using rule 2 (sentencia)
 
 
 state 7
+
+    4 sentencias: expresion .
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '^'  shift, and go to state 15
+
+    $default  reduce using rule 4 (sentencias)
+
+
+state 8
+
+    6 sentencias: VARIABLE '=' . expresion
+
+    VARIABLE  shift, and go to state 16
+    NUMERO    shift, and go to state 2
+
+    expresion  go to state 17
+
+
+state 9
 
     0 $accept: S $end .
 
     $default  accept
 
 
-state 8
-
-    4 S: sentencia S .
-
-    $default  reduce using rule 4 (S)
-
-
-state 9
-
-   10 expresion: expresion '+' . expresion
-
-    VARIABLE  shift, and go to state 15
-    NUMERO    shift, and go to state 2
-
-    expresion  go to state 17
-
-
 state 10
 
-   11 expresion: expresion '-' . expresion
+    3 sentencia: sentencia sentencias .
 
-    VARIABLE  shift, and go to state 15
+    $default  reduce using rule 3 (sentencia)
+
+
+state 11
+
+    9 expresion: expresion '+' . expresion
+
+    VARIABLE  shift, and go to state 16
     NUMERO    shift, and go to state 2
 
     expresion  go to state 18
 
 
-state 11
+state 12
 
-   12 expresion: expresion '*' . expresion
+   10 expresion: expresion '-' . expresion
 
-    VARIABLE  shift, and go to state 15
+    VARIABLE  shift, and go to state 16
     NUMERO    shift, and go to state 2
 
     expresion  go to state 19
 
 
-state 12
+state 13
 
-   13 expresion: expresion '/' . expresion
+   11 expresion: expresion '*' . expresion
 
-    VARIABLE  shift, and go to state 15
+    VARIABLE  shift, and go to state 16
     NUMERO    shift, and go to state 2
 
     expresion  go to state 20
 
 
-state 13
+state 14
 
-   14 expresion: expresion '^' . expresion
+   12 expresion: expresion '/' . expresion
 
-    VARIABLE  shift, and go to state 15
+    VARIABLE  shift, and go to state 16
     NUMERO    shift, and go to state 2
 
     expresion  go to state 21
 
 
-state 14
-
-    3 S: expresion S .
-
-    $default  reduce using rule 3 (S)
-
-
 state 15
 
-    9 expresion: VARIABLE .
+   13 expresion: expresion '^' . expresion
 
-    $default  reduce using rule 9 (expresion)
+    VARIABLE  shift, and go to state 16
+    NUMERO    shift, and go to state 2
+
+    expresion  go to state 22
 
 
 state 16
 
-    7 sentencia: VARIABLE '=' expresion .
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
+    8 expresion: VARIABLE .
 
-    '+'  shift, and go to state 9
-    '-'  shift, and go to state 10
-    '*'  shift, and go to state 11
-    '/'  shift, and go to state 12
-    '^'  shift, and go to state 13
-
-    $default  reduce using rule 7 (sentencia)
+    $default  reduce using rule 8 (expresion)
 
 
 state 17
 
-   10 expresion: expresion . '+' expresion
-   10          | expresion '+' expresion .
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
+    6 sentencias: VARIABLE '=' expresion .
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
 
-    '*'  shift, and go to state 11
-    '/'  shift, and go to state 12
-    '^'  shift, and go to state 13
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '^'  shift, and go to state 15
 
-    $default  reduce using rule 10 (expresion)
+    $default  reduce using rule 6 (sentencias)
 
 
 state 18
 
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   11          | expresion '-' expresion .
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
+    9 expresion: expresion . '+' expresion
+    9          | expresion '+' expresion .
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
 
-    '*'  shift, and go to state 11
-    '/'  shift, and go to state 12
-    '^'  shift, and go to state 13
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '^'  shift, and go to state 15
 
-    $default  reduce using rule 11 (expresion)
+    $default  reduce using rule 9 (expresion)
 
 
 state 19
 
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   12          | expresion '*' expresion .
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   10          | expresion '-' expresion .
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
 
-    '^'  shift, and go to state 13
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+    '^'  shift, and go to state 15
 
-    $default  reduce using rule 12 (expresion)
+    $default  reduce using rule 10 (expresion)
 
 
 state 20
 
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   13          | expresion '/' expresion .
-   14          | expresion . '^' expresion
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   11          | expresion '*' expresion .
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
 
-    '^'  shift, and go to state 13
+    '^'  shift, and go to state 15
 
-    $default  reduce using rule 13 (expresion)
+    $default  reduce using rule 11 (expresion)
 
 
 state 21
 
-   10 expresion: expresion . '+' expresion
-   11          | expresion . '-' expresion
-   12          | expresion . '*' expresion
-   13          | expresion . '/' expresion
-   14          | expresion . '^' expresion
-   14          | expresion '^' expresion .
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   12          | expresion '/' expresion .
+   13          | expresion . '^' expresion
 
-    '^'  shift, and go to state 13
+    '^'  shift, and go to state 15
 
-    $default  reduce using rule 14 (expresion)
+    $default  reduce using rule 12 (expresion)
+
+
+state 22
+
+    9 expresion: expresion . '+' expresion
+   10          | expresion . '-' expresion
+   11          | expresion . '*' expresion
+   12          | expresion . '/' expresion
+   13          | expresion . '^' expresion
+   13          | expresion '^' expresion .
+
+    '^'  shift, and go to state 15
+
+    $default  reduce using rule 13 (expresion)

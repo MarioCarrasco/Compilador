@@ -26,9 +26,11 @@ int num_simbolos = 0;
 
 %token <sVal> VARIABLE '='
 %token <vInt> NUMERO
+%token <sVal> COMENTARIO
 
 %type <valores> sentencia
 %type <valores> expresion
+%type <valores> sentencias
 
 %left '+' '-'
 %left '*' '/'
@@ -36,14 +38,14 @@ int num_simbolos = 0;
 %start S
 %%
 
-S: expresion { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
-   |sentencia
-   |expresion S
-   |sentencia S
-   |
+S: sentencia { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
    ;
 
-sentencia: expresion {printf(" El resultado es %d\n", $1.valInt); }
+sentencia: sentencias { $$.nodo = $1.nodo; }
+            | sentencia sentencias { $$.nodo = createASTNode("SS", -1, -1, $1.nodo, $2.nodo); }
+
+sentencias: expresion {printf(" El resultado es %d\n", $1.valInt); }
+   | COMENTARIO { /*No se hace nada con los comentarios, se obvian*/ }
    | VARIABLE '=' expresion {  
             printf("Tipo de la expresion: %s \n", $3.tipo);
             if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
@@ -60,12 +62,12 @@ sentencia: expresion {printf(" El resultado es %d\n", $1.valInt); }
                printf("Actualizamos simbolo\n"); 
                for (int i = 0; i < num_simbolos; i++) {
                   if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
-                     tabla_simbolos[num_simbolos].nombre = $1;
-                     tabla_simbolos[num_simbolos].tipo = "entero";
-                     tabla_simbolos[num_simbolos].valor = $3.valInt;
-                     printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].nombre);
-                     printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].tipo);
-                     printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[num_simbolos].valor);
+                     tabla_simbolos[i].nombre = $1;
+                     tabla_simbolos[i].tipo = "entero";
+                     tabla_simbolos[i].valor = $3.valInt;
+                     printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                     printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                     printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
                   }
                }
             }
@@ -79,10 +81,11 @@ expresion: NUMERO { $$.valInt = $1; $$.nodo = createASTNode("numero", $1, -1, NU
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
                int temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
                $$.valInt = temp2;
+               printf("Nuevo valor: %d\n", temp2);
                $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
             }
             else{
-               fprintf(yyout, "Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
+               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
                // cazar error de variable no declarada
             }
          }
