@@ -441,7 +441,7 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    44,    44,    47,    48,    51,    52,    53,    54,   116,
-     117,   118,   146,   176,   203,   230,   261
+     117,   118,   146,   176,   203,   230,   265
 };
 #endif
 
@@ -1620,8 +1620,12 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 230 "compilador.y"
     { 
-               if ((yyvsp[(3) - (3)].valores).valFloat == 0 || (yyvsp[(3) - (3)].valores).valInt == 0){
-                  printf("Error en linea %s: No se puede dividir entre 0\n",yylineno);
+               if (strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0 && (yyvsp[(3) - (3)].valores).valInt == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  exit(1);
+               }
+               else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0 && (yyvsp[(3) - (3)].valores).valFloat == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
                   exit(1);
                }
                else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
@@ -1632,7 +1636,7 @@ yyreduce:
                      printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
                      exit(1);
                   }
                }
@@ -1655,7 +1659,7 @@ yyreduce:
   case 16:
 
 /* Line 1464 of yacc.c  */
-#line 261 "compilador.y"
+#line 265 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1688,7 +1692,7 @@ yyreduce:
 
 
 /* Line 1464 of yacc.c  */
-#line 1692 "compilador.tab.c"
+#line 1696 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1900,7 +1904,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 290 "compilador.y"
+#line 294 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;

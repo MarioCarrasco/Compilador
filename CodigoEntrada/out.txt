@@ -8,6 +8,6 @@ ERROR: Operación 'entero' inválida en la linea 6
 ERROR: Operación 'asignacion' inválida en la linea 6
 ERROR: Operación 'variable' inválida en la linea 6
 ERROR: Operación 'decimal' inválida en la linea 6
-SUB 8197768, 8197800
-ERROR: Operación 'entero' inválida en la linea 6
+SUB 12850824, 12850856
 ERROR: Operación 'variable' inválida en la linea 6
+ERROR: Operación 'entero' inválida en la linea 6

@@ -228,8 +228,12 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
                $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo);
             }
          | expresion '/' expresion { 
-               if ($3.valFloat == 0 || $3.valInt == 0){
-                  printf("Error en linea %s: No se puede dividir entre 0\n",yylineno);
+               if (strcmp($3.tipo, "entero") == 0 && $3.valInt == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  exit(1);
+               }
+               else if (strcmp($3.tipo, "decimal") == 0 && $3.valFloat == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
                   exit(1);
                }
                else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
@@ -240,7 +244,7 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
                      printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, $1.valFloat, $3.valFloat);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
                      exit(1);
                   }
                }
