@@ -1,12 +1,13 @@
-ERROR: Operación 'SS' inválida en la linea 4
-ERROR: Operación 'SS' inválida en la linea 4
-ERROR: Operación 'SS' inválida en la linea 4
-ERROR: Operación 'asignacion' inválida en la linea 4
-ERROR: Operación 'variable' inválida en la linea 4
-ERROR: Operación 'numero' inválida en la linea 4
-ERROR: Operación 'asignacion' inválida en la linea 4
-ERROR: Operación 'variable' inválida en la linea 4
-ERROR: Operación 'numero' inválida en la linea 4
+ERROR: Operación 'SS' inválida en la linea 6
+ERROR: Operación 'SS' inválida en la linea 6
+ERROR: Operación 'SS' inválida en la linea 6
+ERROR: Operación 'SS' inválida en la linea 6
+ERROR: Operación 'asignacion' inválida en la linea 6
+ERROR: Operación 'variable' inválida en la linea 6
+ERROR: Operación 'numero' inválida en la linea 6
+ERROR: Operación 'asignacion' inválida en la linea 6
+ERROR: Operación 'variable' inválida en la linea 6
+ERROR: Operación 'numero' inválida en la linea 6
 ADD 7, 8
-ERROR: Operación 'numero' inválida en la linea 4
-ERROR: Operación 'variable' inválida en la linea 4
+ERROR: Operación 'numero' inválida en la linea 6
+ERROR: Operación 'variable' inválida en la linea 6

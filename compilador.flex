@@ -16,6 +16,7 @@ letras [a-zA-Z]+
 digitos [0-9]+
 variable (_*{letras}|_+{digitos})({letras}|{digitos}|_)*
 comentario \#[a-zA-Z0-9 ]*\n
+comentarioLineas [a-zA-Z0-9\n ]*
 
 %%
 
@@ -23,7 +24,7 @@ comentario \#[a-zA-Z0-9 ]*\n
 {variable} {yylval.sVal = strdup(yytext); return VARIABLE;}
 
 
-
+\/\*{comentarioLineas}\*\/ {yylval.sVal = strdup(yytext); return COMENTARIOL;}
 {comentario} {yylval.sVal = strdup(yytext); return COMENTARIO;}
 
 "+" return '+';

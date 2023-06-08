@@ -27,6 +27,7 @@ int num_simbolos = 0;
 %token <sVal> VARIABLE '='
 %token <vInt> NUMERO
 %token <sVal> COMENTARIO
+%token <sVal> COMENTARIOL
 
 %type <valores> sentencia
 %type <valores> expresion
@@ -43,9 +44,11 @@ S: sentencia { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodig
 
 sentencia: sentencias { $$.nodo = $1.nodo; }
             | sentencia sentencias { $$.nodo = createASTNode("SS", -1, -1, $1.nodo, $2.nodo); }
+         ;
 
-sentencias: expresion {printf(" El resultado es %d\n", $1.valInt); }
+sentencias: expresion { $$.nodo = $1.nodo; }
    | COMENTARIO { /*No se hace nada con los comentarios, se obvian*/ }
+   | COMENTARIOL { /*No se hace nada con los comentarios, se obvian*/ }
    | VARIABLE '=' expresion {  
             printf("Tipo de la expresion: %s \n", $3.tipo);
             if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
