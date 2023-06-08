@@ -6,10 +6,10 @@ typedef struct {
    char *nombre;
    char *tipo;
    int valor;
+   float valorFloat;
 }simbolo;
 
 int buscar_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
-   printf("buscando simbolo\n");
    for (int i = 0; i < num_simbolos; i++) {
       if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
          printf("encontrado\n");
@@ -18,6 +18,26 @@ int buscar_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
    }
    printf("no encontrado\n");
    return 0;
+}
+
+float buscar_simboloFloat(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
+   for (int i = 0; i < num_simbolos; i++) {
+      if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
+         printf("encontrado\n");
+         return tabla_simbolos[i].valorFloat;
+      }
+   }
+   printf("no encontrado\n");
+   return 0;
+}
+
+char* buscar_tipo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {
+   for (int i = 0; i < num_simbolos; i++) {
+      if (strcmp(tabla_simbolos[i].nombre, nombre) == 0) {
+         return tabla_simbolos[i].tipo;
+      }
+   }
+   return "noType";
 }
 
 int existe_simbolo(char *nombre, simbolo* tabla_simbolos, int num_simbolos) {

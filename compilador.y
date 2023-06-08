@@ -53,29 +53,61 @@ sentencias: expresion { $$.nodo = $1.nodo; }
    | COMENTARIOL { /*No se hace nada con los comentarios, se obvian*/ }
    | VARIABLE '=' expresion {  
             printf("Tipo de la expresion: %s \n", $3.tipo);
-            if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
-               printf("Nuevo simbolo\n"); 
-               tabla_simbolos[num_simbolos].nombre = $1;
-               tabla_simbolos[num_simbolos].tipo = "entero";
-               tabla_simbolos[num_simbolos].valor = $3.valInt;
-               printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
-               printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
-               printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
-               num_simbolos++;
-            }
-            else{ // exixte simbolo, se actualiza
-               printf("Actualizamos simbolo\n"); 
-               for (int i = 0; i < num_simbolos; i++) {
-                  if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
-                     tabla_simbolos[i].nombre = $1;
-                     tabla_simbolos[i].tipo = "entero";
-                     tabla_simbolos[i].valor = $3.valInt;
-                     printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
-                     printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
-                     printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
+            char* nuevoTipo = "";
+            if (strcmp($3.tipo, "entero") == 0){
+               nuevoTipo = "entero";
+               if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = $1;
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valor = $3.valInt;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
+                        tabla_simbolos[i].nombre = $1;
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valor = $3.valInt;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
+                     }
                   }
                }
             }
+            else if (strcmp($3.tipo, "decimal") == 0){
+               nuevoTipo = "decimal";
+               if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = $1;
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valorFloat = $3.valFloat;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valorFloat);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
+                        tabla_simbolos[i].nombre = $1;
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valorFloat = $3.valFloat;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %f\n", tabla_simbolos[i].valorFloat);
+                     }
+                  }
+               }
+            }
+
+
             struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
             $$.nodo = createASTNode("asignacion", -1, -1, temp, $3.nodo);
          }
@@ -85,10 +117,26 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
          | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNode("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
-               int temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
-               $$.valInt = temp2;
-               printf("Nuevo valor: %d\n", temp2);
-               $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               int temp2;
+               float temp3;
+               if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="entero"){
+                  temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  $$.valInt = temp2;
+                  $$.tipo = "entero";
+                  printf("Nuevo valor: %d\n", temp2);
+                  $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               }
+               else if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="decimal"){
+                  temp3 = buscar_simboloFloat($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  $$.valFloat = temp3;
+                  $$.tipo = "decimal";
+                  printf("Nuevo valor: %f\n", temp3);
+                  $$.nodo = createASTNode("variable", -1, temp3, NULL, NULL);
+               }
+               else{
+                  printf("Error en linea %d: Tipo de la variable %s no observado\n",yylineno, $1);
+                  exit(1);
+               }
             }
             else{
                printf("Error en linea %d: variable '%s' no declarada\n",yylineno, $1);// cazar error de variable no declarada

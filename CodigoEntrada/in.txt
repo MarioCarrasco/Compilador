@@ -2,5 +2,5 @@
 /*hola
 que tal*/
 var=4
-var=8
-8-2
+var=8.4
+4-var

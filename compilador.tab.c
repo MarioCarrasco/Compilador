@@ -438,10 +438,10 @@ static const yytype_int8 yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    44,    44,    47,    48,    51,    52,    53,    54,    84,
-      85,    86,    98,   128,   155,   182,   213
+       0,    44,    44,    47,    48,    51,    52,    53,    54,   116,
+     117,   118,   146,   176,   203,   230,   261
 };
 #endif
 
@@ -1405,29 +1405,61 @@ yyreduce:
 #line 54 "compilador.y"
     {  
             printf("Tipo de la expresion: %s \n", (yyvsp[(3) - (3)].valores).tipo);
-            if(existe_simbolo((yyvsp[(1) - (3)].sVal),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
-               printf("Nuevo simbolo\n"); 
-               tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].sVal);
-               tabla_simbolos[num_simbolos].tipo = "entero";
-               tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores).valInt;
-               printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
-               printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
-               printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
-               num_simbolos++;
-            }
-            else{ // exixte simbolo, se actualiza
-               printf("Actualizamos simbolo\n"); 
-               for (int i = 0; i < num_simbolos; i++) {
-                  if (strcmp(tabla_simbolos[i].nombre, (yyvsp[(1) - (3)].sVal)) == 0) {
-                     tabla_simbolos[i].nombre = (yyvsp[(1) - (3)].sVal);
-                     tabla_simbolos[i].tipo = "entero";
-                     tabla_simbolos[i].valor = (yyvsp[(3) - (3)].valores).valInt;
-                     printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
-                     printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
-                     printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
+            char* nuevoTipo = "";
+            if (strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
+               nuevoTipo = "entero";
+               if(existe_simbolo((yyvsp[(1) - (3)].sVal),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].sVal);
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valor = (yyvsp[(3) - (3)].valores).valInt;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, (yyvsp[(1) - (3)].sVal)) == 0) {
+                        tabla_simbolos[i].nombre = (yyvsp[(1) - (3)].sVal);
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valor = (yyvsp[(3) - (3)].valores).valInt;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
+                     }
                   }
                }
             }
+            else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
+               nuevoTipo = "decimal";
+               if(existe_simbolo((yyvsp[(1) - (3)].sVal),tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = (yyvsp[(1) - (3)].sVal);
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valorFloat = (yyvsp[(3) - (3)].valores).valFloat;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valorFloat);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, (yyvsp[(1) - (3)].sVal)) == 0) {
+                        tabla_simbolos[i].nombre = (yyvsp[(1) - (3)].sVal);
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valorFloat = (yyvsp[(3) - (3)].valores).valFloat;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %f\n", tabla_simbolos[i].valorFloat);
+                     }
+                  }
+               }
+            }
+
+
             struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
             (yyval.valores).nodo = createASTNode("asignacion", -1, -1, temp, (yyvsp[(3) - (3)].valores).nodo);
          ;}
@@ -1436,27 +1468,43 @@ yyreduce:
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 84 "compilador.y"
+#line 116 "compilador.y"
     { (yyval.valores).valInt = (yyvsp[(1) - (1)].vInt); (yyval.valores).nodo = createASTNode("entero", (yyvsp[(1) - (1)].vInt), -1, NULL, NULL); (yyval.valores).tipo = "entero"; ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 85 "compilador.y"
+#line 117 "compilador.y"
     { (yyval.valores).valFloat = (yyvsp[(1) - (1)].fVal); (yyval.valores).nodo = createASTNode("decimal", -1, (yyvsp[(1) - (1)].fVal), NULL, NULL); (yyval.valores).tipo = "decimal"; ;}
     break;
 
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 86 "compilador.y"
+#line 118 "compilador.y"
     { printf("entra en variable\n"); 
             if(existe_simbolo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)==1){
-               int temp2 = buscar_simbolo((yyvsp[(1) - (1)].sVal),tabla_simbolos,num_simbolos);// solo funciona para valores enteros
-               (yyval.valores).valInt = temp2;
-               printf("Nuevo valor: %d\n", temp2);
-               (yyval.valores).nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               int temp2;
+               float temp3;
+               if (buscar_tipo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)=="entero"){
+                  temp2 = buscar_simbolo((yyvsp[(1) - (1)].sVal),tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  (yyval.valores).valInt = temp2;
+                  (yyval.valores).tipo = "entero";
+                  printf("Nuevo valor: %d\n", temp2);
+                  (yyval.valores).nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               }
+               else if (buscar_tipo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)=="decimal"){
+                  temp3 = buscar_simboloFloat((yyvsp[(1) - (1)].sVal),tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  (yyval.valores).valFloat = temp3;
+                  (yyval.valores).tipo = "decimal";
+                  printf("Nuevo valor: %f\n", temp3);
+                  (yyval.valores).nodo = createASTNode("variable", -1, temp3, NULL, NULL);
+               }
+               else{
+                  printf("Error en linea %d: Tipo de la variable %s no observado\n",yylineno, (yyvsp[(1) - (1)].sVal));
+                  exit(1);
+               }
             }
             else{
                printf("Error en linea %d: variable '%s' no declarada\n",yylineno, (yyvsp[(1) - (1)].sVal));// cazar error de variable no declarada
@@ -1468,7 +1516,7 @@ yyreduce:
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 98 "compilador.y"
+#line 146 "compilador.y"
     {
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1504,7 +1552,7 @@ yyreduce:
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 128 "compilador.y"
+#line 176 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1537,7 +1585,7 @@ yyreduce:
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 155 "compilador.y"
+#line 203 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1570,7 +1618,7 @@ yyreduce:
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 182 "compilador.y"
+#line 230 "compilador.y"
     { 
                if ((yyvsp[(3) - (3)].valores).valFloat == 0 || (yyvsp[(3) - (3)].valores).valInt == 0){
                   printf("Error en linea %s: No se puede dividir entre 0\n",yylineno);
@@ -1607,7 +1655,7 @@ yyreduce:
   case 16:
 
 /* Line 1464 of yacc.c  */
-#line 213 "compilador.y"
+#line 261 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1640,7 +1688,7 @@ yyreduce:
 
 
 /* Line 1464 of yacc.c  */
-#line 1644 "compilador.tab.c"
+#line 1692 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1852,7 +1900,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 242 "compilador.y"
+#line 290 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;
