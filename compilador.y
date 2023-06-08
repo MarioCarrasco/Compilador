@@ -18,14 +18,16 @@ int num_simbolos = 0;
       struct valores{
          char* nombre;
          int valInt;
-         double valDoub;
+         float valFloat;
+         char* valStr;
          char* tipo;
          struct ASTNode* nodo;
       } valores;
 }
 
 %token <sVal> VARIABLE '='
-%token <vInt> NUMERO
+%token <vInt> ENTERO
+%token <fVal> DECIMAL
 %token <sVal> COMENTARIO
 %token <sVal> COMENTARIOL
 
@@ -79,7 +81,8 @@ sentencias: expresion { $$.nodo = $1.nodo; }
          }
       ;
 
-expresion: NUMERO { $$.valInt = $1; $$.nodo = createASTNode("numero", $1, -1, NULL, NULL); $$.tipo = "entero"; /*Añadir opcion para float*/}
+expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NULL, NULL); $$.tipo = "entero"; }
+         | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNode("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
                int temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
@@ -88,15 +91,152 @@ expresion: NUMERO { $$.valInt = $1; $$.nodo = createASTNode("numero", $1, -1, NU
                $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
             }
             else{
-               printf("Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
-               // cazar error de variable no declarada
+               printf("Error en linea %d: variable '%s' no declarada\n",yylineno, $1);// cazar error de variable no declarada
+               exit(1);
             }
          }
-         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1.valInt, $3.valInt); $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '-' expresion { $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '*' expresion { $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '/' expresion { $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '^' expresion { $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo); }
+         | expresion '+' expresion {
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  /*else if (strcmp($1.tipo, "string") == 0){
+                     printf("En la linea %d entra en la concatenacion: %s + %s\n", yylineno, $1.valStr, $3.valStr);
+                  }*/
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la suma: %d + %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la suma: %f + %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); 
+            }
+         | expresion '-' expresion { 
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la resta: %d - %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la resta: %f - %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '*' expresion { 
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '/' expresion { 
+               if ($3.valFloat == 0 || $3.valInt == 0){
+                  printf("Error en linea %s: No se puede dividir entre 0\n",yylineno);
+                  exit(1);
+               }
+               else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la division de enteros: %d / %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la division: %d / %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la division: %f / %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '^' expresion { 
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la potencia: %d ^ %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la potencia: %f ^ %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo);
+            }
       ;
 
 %%

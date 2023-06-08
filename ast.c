@@ -32,20 +32,28 @@ void generarCodigoIntermedio(struct ASTNode* node) {
     //VARIABLES TEMP
 
     if (strcmp(node->type, "suma") == 0) {
-            printf("\nentra en suma ");
-            printf("%s\n",node->type);
-            fprintf(yyout, "ADD %d, %d\n", node->left->valInt, node->right->valInt);
+        printf("\nentra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "ADD %d, %d\n", node->left->valInt, node->right->valInt);
     }
     else if (strcmp(node->type, "resta") == 0) {
+        printf("\nentra en ");
+        printf("%s\n",node->type);
         fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
     }
     else if (strcmp(node->type, "multiplicacion") == 0) {
+        printf("\nentra en ");
+        printf("%s\n",node->type);
         fprintf(yyout, "IMUL %d, %d\n", node->left, node->right);
     }
     else if (strcmp(node->type, "division") == 0) {
+        printf("\nentra en ");
+        printf("%s\n",node->type);
         fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
     }
     else if (strcmp(node->type, "potencia") == 0) {
+        printf("\nentra en ");
+        printf("%s\n",node->type);
         fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
     }
     else {

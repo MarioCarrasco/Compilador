@@ -39,9 +39,10 @@
       know about them.  */
    enum yytokentype {
      VARIABLE = 258,
-     NUMERO = 259,
-     COMENTARIO = 260,
-     COMENTARIOL = 261
+     ENTERO = 259,
+     DECIMAL = 260,
+     COMENTARIO = 261,
+     COMENTARIOL = 262
    };
 #endif
 
@@ -60,7 +61,8 @@ typedef union YYSTYPE
       struct valores{
          char* nombre;
          int valInt;
-         double valDoub;
+         float valFloat;
+         char* valStr;
          char* tipo;
          struct ASTNode* nodo;
       } valores;
@@ -68,7 +70,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 72 "compilador.tab.h"
+#line 74 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
