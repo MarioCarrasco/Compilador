@@ -113,7 +113,14 @@ int num_simbolos = 0;
      ENTERO = 259,
      DECIMAL = 260,
      COMENTARIO = 261,
-     COMENTARIOL = 262
+     COMENTARIOL = 262,
+     SI = 263,
+     FIN = 264,
+     MIENTRAS = 265,
+     DIFERENTE = 266,
+     MAYOR = 267,
+     MENOR = 268,
+     IGUALIGUAL = 269
    };
 #endif
 
@@ -141,7 +148,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 145 "compilador.tab.c"
+#line 152 "compilador.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -153,7 +160,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 157 "compilador.tab.c"
+#line 164 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -366,22 +373,22 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  11
+#define YYFINAL  18
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   26
+#define YYLAST   55
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  14
+#define YYNTOKENS  23
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  16
+#define YYNRULES  25
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  25
+#define YYNSTATES  49
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   262
+#define YYMAXUTOK   269
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -393,14 +400,12 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,    11,     9,     2,    10,     2,    12,     2,     2,
+      15,    16,    20,    17,     2,    18,     2,    21,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     4,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    13,     2,     2,     2,     2,     2,
+       2,    19,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    22,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -414,8 +419,10 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     3,     5,
-       6,     7,     8
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
 };
 
 #if YYDEBUG
@@ -424,24 +431,30 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     5,     7,    10,    12,    14,    16,    20,
-      22,    24,    26,    30,    34,    38,    42
+      22,    24,    26,    30,    34,    38,    42,    46,    48,    50,
+      52,    56,    60,    64,    68,    75
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      15,     0,    -1,    16,    -1,    17,    -1,    16,    17,    -1,
-      18,    -1,     7,    -1,     8,    -1,     3,     4,    18,    -1,
-       5,    -1,     6,    -1,     3,    -1,    18,     9,    18,    -1,
-      18,    10,    18,    -1,    18,    11,    18,    -1,    18,    12,
-      18,    -1,    18,    13,    18,    -1
+      24,     0,    -1,    25,    -1,    26,    -1,    25,    26,    -1,
+      27,    -1,     6,    -1,     7,    -1,     3,    19,    27,    -1,
+       4,    -1,     5,    -1,     3,    -1,    27,    17,    27,    -1,
+      27,    18,    27,    -1,    27,    20,    27,    -1,    27,    21,
+      27,    -1,    27,    22,    27,    -1,    28,    -1,    29,    -1,
+      30,    -1,    27,    12,    27,    -1,    27,    13,    27,    -1,
+      27,    14,    27,    -1,    27,    11,    27,    -1,     8,    15,
+      28,    16,    24,     9,    -1,    10,    15,    28,    16,    24,
+       9,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    44,    44,    47,    48,    51,    52,    53,    54,   116,
-     117,   118,   146,   176,   203,   230,   265
+       0,    50,    50,    53,    54,    57,    58,    59,    60,   122,
+     123,   124,   152,   186,   217,   248,   287,   319,   320,   321,
+     324,   334,   344,   354,   366,   369
 };
 #endif
 
@@ -450,9 +463,11 @@ static const yytype_uint16 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "VARIABLE", "'='", "ENTERO", "DECIMAL",
-  "COMENTARIO", "COMENTARIOL", "'+'", "'-'", "'*'", "'/'", "'^'",
-  "$accept", "S", "sentencia", "sentencias", "expresion", 0
+  "$end", "error", "$undefined", "VARIABLE", "ENTERO", "DECIMAL",
+  "COMENTARIO", "COMENTARIOL", "SI", "FIN", "MIENTRAS", "DIFERENTE",
+  "MAYOR", "MENOR", "IGUALIGUAL", "'('", "')'", "'+'", "'-'", "'='", "'*'",
+  "'/'", "'^'", "$accept", "S", "sentencia", "sentencias", "expresion",
+  "expr_booleanas", "sentencia_si", "bucle_while", 0
 };
 #endif
 
@@ -461,23 +476,26 @@ static const char *const yytname[] =
    token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,    61,   259,   260,   261,   262,    43,
-      45,    42,    47,    94
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,    40,    41,    43,    45,    61,
+      42,    47,    94
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    14,    15,    16,    16,    17,    17,    17,    17,    18,
-      18,    18,    18,    18,    18,    18,    18
+       0,    23,    24,    25,    25,    26,    26,    26,    26,    27,
+      27,    27,    27,    27,    27,    27,    27,    27,    27,    27,
+      28,    28,    28,    28,    29,    30
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     1,     2,     1,     1,     1,     3,     1,
-       1,     1,     3,     3,     3,     3,     3
+       1,     1,     3,     3,     3,     3,     3,     1,     1,     1,
+       3,     3,     3,     3,     6,     6
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -485,31 +503,35 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,    11,     9,    10,     6,     7,     0,     2,     3,     5,
-       0,     1,     4,     0,     0,     0,     0,     0,    11,     8,
-      12,    13,    14,    15,    16
+       0,    11,     9,    10,     6,     7,     0,     0,     0,     2,
+       3,     5,    17,    18,    19,     0,     0,     0,     1,     4,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    11,
+       8,     0,    17,    17,    23,    20,    21,    22,    12,    13,
+      14,    15,    16,     0,     0,     0,     0,    24,    25
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     6,     7,     8,     9
+      -1,     8,     9,    10,    11,    12,    13,    14
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -11
+#define YYPACT_NINF -41
 static const yytype_int8 yypact[] =
 {
-       5,    -3,   -11,   -11,   -11,   -11,     2,     5,   -11,     6,
-      17,   -11,   -11,    17,    17,    17,    17,    17,   -11,     6,
-      13,    13,    -4,    -4,    -4
+      23,    13,   -41,   -41,   -41,   -41,     7,    22,    38,    23,
+     -41,     3,   -41,   -41,   -41,    31,    31,    31,   -41,   -41,
+      31,    31,    31,    31,    31,    31,    31,    31,    31,   -41,
+       3,     3,    24,    35,    25,    25,    25,    25,    28,    28,
+      30,    30,    30,    23,    23,    44,    45,   -41,   -41
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -11,   -11,   -11,     7,   -10
+     -41,   -40,   -41,    46,   -15,     2,   -41,   -41
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -519,25 +541,33 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      19,    10,    11,    20,    21,    22,    23,    24,     1,    17,
-       2,     3,     4,     5,    12,    13,    14,    15,    16,    17,
-      18,     0,     2,     3,    15,    16,    17
+      30,    31,    31,    45,    46,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    20,    21,    22,    23,    32,    33,
+      24,    25,    16,    26,    27,    28,     1,     2,     3,     4,
+       5,     6,    15,     7,    29,     2,     3,    17,    18,     6,
+      43,     7,    24,    25,     0,    26,    27,    28,    26,    27,
+      28,    44,    28,    47,    48,    19
 };
 
 static const yytype_int8 yycheck[] =
 {
-      10,     4,     0,    13,    14,    15,    16,    17,     3,    13,
-       5,     6,     7,     8,     7,     9,    10,    11,    12,    13,
-       3,    -1,     5,     6,    11,    12,    13
+      15,    16,    17,    43,    44,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    11,    12,    13,    14,    16,    17,
+      17,    18,    15,    20,    21,    22,     3,     4,     5,     6,
+       7,     8,    19,    10,     3,     4,     5,    15,     0,     8,
+      16,    10,    17,    18,    -1,    20,    21,    22,    20,    21,
+      22,    16,    22,     9,     9,     9
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     5,     6,     7,     8,    15,    16,    17,    18,
-       4,     0,    17,     9,    10,    11,    12,    13,     3,    18,
-      18,    18,    18,    18,    18
+       0,     3,     4,     5,     6,     7,     8,    10,    24,    25,
+      26,    27,    28,    29,    30,    19,    15,    15,     0,    26,
+      11,    12,    13,    14,    17,    18,    20,    21,    22,     3,
+      27,    27,    28,    28,    27,    27,    27,    27,    27,    27,
+      27,    27,    27,    16,    16,    24,    24,     9,     9
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1360,49 +1390,49 @@ yyreduce:
         case 2:
 
 /* Line 1464 of yacc.c  */
-#line 44 "compilador.y"
+#line 50 "compilador.y"
     { generarCodigoIntermedio((yyvsp[(1) - (1)].valores).nodo);/*llamar al método generarCodigoIntermedio()*/;}
     break;
 
   case 3:
 
 /* Line 1464 of yacc.c  */
-#line 47 "compilador.y"
+#line 53 "compilador.y"
     { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
     break;
 
   case 4:
 
 /* Line 1464 of yacc.c  */
-#line 48 "compilador.y"
+#line 54 "compilador.y"
     { (yyval.valores).nodo = createASTNode("SS", -1, -1, (yyvsp[(1) - (2)].valores).nodo, (yyvsp[(2) - (2)].valores).nodo); ;}
     break;
 
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 51 "compilador.y"
+#line 57 "compilador.y"
     { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 52 "compilador.y"
+#line 58 "compilador.y"
     { /*No se hace nada con los comentarios, se obvian*/ ;}
     break;
 
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 53 "compilador.y"
+#line 59 "compilador.y"
     { /*No se hace nada con los comentarios, se obvian*/ ;}
     break;
 
   case 8:
 
 /* Line 1464 of yacc.c  */
-#line 54 "compilador.y"
+#line 60 "compilador.y"
     {  
             printf("Tipo de la expresion: %s \n", (yyvsp[(3) - (3)].valores).tipo);
             char* nuevoTipo = "";
@@ -1468,21 +1498,21 @@ yyreduce:
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 116 "compilador.y"
+#line 122 "compilador.y"
     { (yyval.valores).valInt = (yyvsp[(1) - (1)].vInt); (yyval.valores).nodo = createASTNode("entero", (yyvsp[(1) - (1)].vInt), -1, NULL, NULL); (yyval.valores).tipo = "entero"; ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 117 "compilador.y"
+#line 123 "compilador.y"
     { (yyval.valores).valFloat = (yyvsp[(1) - (1)].fVal); (yyval.valores).nodo = createASTNode("decimal", -1, (yyvsp[(1) - (1)].fVal), NULL, NULL); (yyval.valores).tipo = "decimal"; ;}
     break;
 
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 118 "compilador.y"
+#line 124 "compilador.y"
     { printf("entra en variable\n"); 
             if(existe_simbolo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)==1){
                int temp2;
@@ -1516,7 +1546,7 @@ yyreduce:
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 146 "compilador.y"
+#line 152 "compilador.y"
     {
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
@@ -1534,7 +1564,11 @@ yyreduce:
                   }
                }
                else {
-                  if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
+                  if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+                     printf("Error en linea %s: No se pueden operar numeros con strings\n",yylineno);
+                     exit(1);
+                  }
+                  else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
                      printf("En la linea %d entra en la suma: %d + %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
@@ -1552,8 +1586,12 @@ yyreduce:
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 176 "compilador.y"
+#line 186 "compilador.y"
     { 
+               if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'resta' con un string\n", yylineno);
+                     exit(1);
+               }
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
                      printf("En la linea %d entra en la resta de enteros: %d - %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
@@ -1562,7 +1600,7 @@ yyreduce:
                      printf("En la linea %d entra en la resta de decimales: %f - %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
                      exit(1);
                   }
                }
@@ -1585,9 +1623,13 @@ yyreduce:
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 203 "compilador.y"
+#line 217 "compilador.y"
     { 
-               if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
+               if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
                      printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
@@ -1618,9 +1660,13 @@ yyreduce:
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 230 "compilador.y"
+#line 248 "compilador.y"
     { 
-               if (strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0 && (yyvsp[(3) - (3)].valores).valInt == 0){
+               if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0 && (yyvsp[(3) - (3)].valores).valInt == 0){
                   printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
                   exit(1);
                }
@@ -1659,9 +1705,13 @@ yyreduce:
   case 16:
 
 /* Line 1464 of yacc.c  */
-#line 265 "compilador.y"
+#line 287 "compilador.y"
     { 
-               if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
+               if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
                      printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
@@ -1689,10 +1739,109 @@ yyreduce:
             ;}
     break;
 
+  case 17:
+
+/* Line 1464 of yacc.c  */
+#line 319 "compilador.y"
+    { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
+    break;
+
+  case 18:
+
+/* Line 1464 of yacc.c  */
+#line 320 "compilador.y"
+    { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
+    break;
+
+  case 19:
+
+/* Line 1464 of yacc.c  */
+#line 321 "compilador.y"
+    { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
+    break;
+
+  case 20:
+
+/* Line 1464 of yacc.c  */
+#line 324 "compilador.y"
+    {
+            if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               (yyval.valores).tipo = "bool";
+               (yyval.valores).nodo = createASTNode("mayor", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo);
+            }
+         ;}
+    break;
+
+  case 21:
+
+/* Line 1464 of yacc.c  */
+#line 334 "compilador.y"
+    {
+               if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               (yyval.valores).tipo = "bool";
+               (yyval.valores).nodo = createASTNode("menor", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo);
+            }
+         ;}
+    break;
+
+  case 22:
+
+/* Line 1464 of yacc.c  */
+#line 344 "compilador.y"
+    {
+            if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               (yyval.valores).tipo = "bool";
+               (yyval.valores).nodo = createASTNode("igualigual", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo);
+            }         
+         ;}
+    break;
+
+  case 23:
+
+/* Line 1464 of yacc.c  */
+#line 354 "compilador.y"
+    {
+            if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
+               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               (yyval.valores).tipo = "bool";
+               (yyval.valores).nodo = createASTNode("diferente", -1, -1, (yyvsp[(1) - (3)].valores).nodo, (yyvsp[(3) - (3)].valores).nodo);
+            }
+         ;}
+    break;
+
+  case 24:
+
+/* Line 1464 of yacc.c  */
+#line 366 "compilador.y"
+    {  ;}
+    break;
+
+  case 25:
+
+/* Line 1464 of yacc.c  */
+#line 369 "compilador.y"
+    {  ;}
+    break;
+
 
 
 /* Line 1464 of yacc.c  */
-#line 1696 "compilador.tab.c"
+#line 1845 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1904,7 +2053,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 294 "compilador.y"
+#line 373 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;

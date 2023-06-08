@@ -4,3 +4,4 @@ que tal*/
 var=4
 var=8.4
 var/9
+20>10

@@ -42,7 +42,14 @@
      ENTERO = 259,
      DECIMAL = 260,
      COMENTARIO = 261,
-     COMENTARIOL = 262
+     COMENTARIOL = 262,
+     SI = 263,
+     FIN = 264,
+     MIENTRAS = 265,
+     DIFERENTE = 266,
+     MAYOR = 267,
+     MENOR = 268,
+     IGUALIGUAL = 269
    };
 #endif
 
@@ -70,7 +77,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 74 "compilador.tab.h"
+#line 81 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

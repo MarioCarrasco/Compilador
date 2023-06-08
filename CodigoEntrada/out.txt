@@ -1,13 +1,17 @@
-ERROR: Operación 'SS' inválida en la linea 6
-ERROR: Operación 'SS' inválida en la linea 6
-ERROR: Operación 'SS' inválida en la linea 6
-ERROR: Operación 'SS' inválida en la linea 6
-ERROR: Operación 'asignacion' inválida en la linea 6
-ERROR: Operación 'variable' inválida en la linea 6
-ERROR: Operación 'entero' inválida en la linea 6
-ERROR: Operación 'asignacion' inválida en la linea 6
-ERROR: Operación 'variable' inválida en la linea 6
-ERROR: Operación 'decimal' inválida en la linea 6
-SUB 12850824, 12850856
-ERROR: Operación 'variable' inválida en la linea 6
-ERROR: Operación 'entero' inválida en la linea 6
+ERROR: Operación 'SS' inválida en la linea 7
+ERROR: Operación 'SS' inválida en la linea 7
+ERROR: Operación 'SS' inválida en la linea 7
+ERROR: Operación 'SS' inválida en la linea 7
+ERROR: Operación 'SS' inválida en la linea 7
+ERROR: Operación 'asignacion' inválida en la linea 7
+ERROR: Operación 'variable' inválida en la linea 7
+ERROR: Operación 'entero' inválida en la linea 7
+ERROR: Operación 'asignacion' inválida en la linea 7
+ERROR: Operación 'variable' inválida en la linea 7
+ERROR: Operación 'decimal' inválida en la linea 7
+SUB 12981896, 12981928
+ERROR: Operación 'variable' inválida en la linea 7
+ERROR: Operación 'entero' inválida en la linea 7
+ERROR: Operación 'mayor' inválida en la linea 7
+ERROR: Operación 'entero' inválida en la linea 7
+ERROR: Operación 'entero' inválida en la linea 7
