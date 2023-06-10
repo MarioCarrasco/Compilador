@@ -47,7 +47,7 @@ int num_simbolos = 0;
 %start S
 %%
 
-S: sentencia { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
+S: sentencia { iniciarGCI($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
    ;
 
 sentencia: sentencias { $$.nodo = $1.nodo; }
@@ -119,7 +119,10 @@ sentencias: expresion { $$.nodo = $1.nodo; }
          }
       ;
 
-expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NULL, NULL); $$.tipo = "entero"; }
+expresion: ENTERO { $$.valInt = $1; 
+                  $$.valFloat = (float)$1;
+                  $$.nodo = createASTNode("entero", $1, (float)$1, NULL, NULL); $$.tipo = "entero"; 
+                  }
          | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNode("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
@@ -130,7 +133,7 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
                   $$.valInt = temp2;
                   $$.tipo = "entero";
                   printf("Nuevo valor: %d\n", temp2);
-                  $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+                  $$.nodo = createASTNode("variable", temp2, (float)temp2, NULL, NULL);
                }
                else if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="decimal"){
                   temp3 = buscar_simboloFloat($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
@@ -161,13 +164,13 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
                      printf("En la linea %d entra en la concatenacion: %s + %s\n", yylineno, $1.valStr, $3.valStr);
                   }*/
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %s: No se pueden operar numeros con strings\n",yylineno);
+                     printf("Error en linea %d: No se pueden operar numeros con strings\n",yylineno);
                      exit(1);
                   }
                   else if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
@@ -177,7 +180,7 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
                      printf("En la linea %d entra en la suma: %f + %d\n", yylineno, $1.valFloat, $3.valInt);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
                      exit(1);
                   }
                }
@@ -185,7 +188,7 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
             }
          | expresion '-' expresion { 
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'resta' con un string\n", yylineno);
+                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", yylineno);
                      exit(1);
                }
                if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
@@ -323,7 +326,7 @@ expresion: ENTERO { $$.valInt = $1; $$.nodo = createASTNode("entero", $1, -1, NU
 
 expr_booleanas: expresion MAYOR expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
                exit(1);
             }
             else{
@@ -333,7 +336,7 @@ expr_booleanas: expresion MAYOR expresion{
          }
          | expresion MENOR expresion{
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
                exit(1);
             }
             else{
@@ -343,7 +346,7 @@ expr_booleanas: expresion MAYOR expresion{
          }
          | expresion IGUALIGUAL expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
                exit(1);
             }
             else{
@@ -353,7 +356,7 @@ expr_booleanas: expresion MAYOR expresion{
          }
          | expresion DIFERENTE expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %s: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
                exit(1);
             }
             else{
@@ -363,10 +366,10 @@ expr_booleanas: expresion MAYOR expresion{
          }
       ;
 
-sentencia_si: SI '('expr_booleanas')' S FIN {  }
+sentencia_si: SI '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("si", -1, -1, $3.nodo, $5.nodo); }
       ;
 
-bucle_while: MIENTRAS '('expr_booleanas')' S FIN {  }
+bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("mientras", -1, -1, $3.nodo, $5.nodo); }
       ;
 
 

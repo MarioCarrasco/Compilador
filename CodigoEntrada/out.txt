@@ -1,17 +1,38 @@
-ERROR: Operación 'SS' inválida en la linea 7
-ERROR: Operación 'SS' inválida en la linea 7
-ERROR: Operación 'SS' inválida en la linea 7
-ERROR: Operación 'SS' inválida en la linea 7
-ERROR: Operación 'SS' inválida en la linea 7
-ERROR: Operación 'asignacion' inválida en la linea 7
-ERROR: Operación 'variable' inválida en la linea 7
-ERROR: Operación 'entero' inválida en la linea 7
-ERROR: Operación 'asignacion' inválida en la linea 7
-ERROR: Operación 'variable' inválida en la linea 7
-ERROR: Operación 'decimal' inválida en la linea 7
-SUB 12981896, 12981928
-ERROR: Operación 'variable' inválida en la linea 7
-ERROR: Operación 'entero' inválida en la linea 7
-ERROR: Operación 'mayor' inválida en la linea 7
-ERROR: Operación 'entero' inválida en la linea 7
-ERROR: Operación 'entero' inválida en la linea 7
+.data
+
+.text
+SS
+SS
+SS
+SS
+SS
+SS
+SS
+ASIGNACION
+VARIABLE
+ENTERO
+ASIGNACION
+VARIABLE
+DECIMAL
+DIVISION
+VARIABLE
+ENTERO
+ASIGNACION
+VARIABLE
+ENTERO
+MIENTRAS
+MENOR
+VARIABLE
+ENTERO
+ASIGNACION
+VARIABLE
+SUMA
+VARIABLE
+ENTERO
+SI
+MAYOR
+ENTERO
+ENTERO
+SUMA
+ENTERO
+ENTERO

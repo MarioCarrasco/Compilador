@@ -29,9 +29,9 @@ Grammar
    21               | expresion IGUALIGUAL expresion
    22               | expresion DIFERENTE expresion
 
-   23 sentencia_si: SI '(' expr_booleanas ')' S FIN
+   23 sentencia_si: SI '(' expr_booleanas ')' sentencia FIN
 
-   24 bucle_while: MIENTRAS '(' expr_booleanas ')' S FIN
+   24 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN
 
 
 Terminals, with rules where they appear
@@ -65,9 +65,9 @@ Nonterminals, with rules where they appear
 $accept (23)
     on left: 0
 S (24)
-    on left: 1, on right: 0 23 24
+    on left: 1, on right: 0
 sentencia (25)
-    on left: 2 3, on right: 1 3
+    on left: 2 3, on right: 1 3 23 24
 sentencias (26)
     on left: 4 5 6 7, on right: 2 3
 expresion (27)
@@ -142,14 +142,14 @@ state 5
 
 state 6
 
-   23 sentencia_si: SI . '(' expr_booleanas ')' S FIN
+   23 sentencia_si: SI . '(' expr_booleanas ')' sentencia FIN
 
     '('  shift, and go to state 16
 
 
 state 7
 
-   24 bucle_while: MIENTRAS . '(' expr_booleanas ')' S FIN
+   24 bucle_while: MIENTRAS . '(' expr_booleanas ')' sentencia FIN
 
     '('  shift, and go to state 17
 
@@ -255,7 +255,7 @@ state 15
 
 state 16
 
-   23 sentencia_si: SI '(' . expr_booleanas ')' S FIN
+   23 sentencia_si: SI '(' . expr_booleanas ')' sentencia FIN
 
     VARIABLE  shift, and go to state 29
     ENTERO    shift, and go to state 2
@@ -271,7 +271,7 @@ state 16
 
 state 17
 
-   24 bucle_while: MIENTRAS '(' . expr_booleanas ')' S FIN
+   24 bucle_while: MIENTRAS '(' . expr_booleanas ')' sentencia FIN
 
     VARIABLE  shift, and go to state 29
     ENTERO    shift, and go to state 2
@@ -502,7 +502,7 @@ state 31
 state 32
 
    16 expresion: expr_booleanas .
-   23 sentencia_si: SI '(' expr_booleanas . ')' S FIN
+   23 sentencia_si: SI '(' expr_booleanas . ')' sentencia FIN
 
     ')'  shift, and go to state 43
 
@@ -512,7 +512,7 @@ state 32
 state 33
 
    16 expresion: expr_booleanas .
-   24 bucle_while: MIENTRAS '(' expr_booleanas . ')' S FIN
+   24 bucle_while: MIENTRAS '(' expr_booleanas . ')' sentencia FIN
 
     ')'  shift, and go to state 44
 
@@ -703,7 +703,7 @@ state 42
 
 state 43
 
-   23 sentencia_si: SI '(' expr_booleanas ')' . S FIN
+   23 sentencia_si: SI '(' expr_booleanas ')' . sentencia FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -713,8 +713,7 @@ state 43
     SI           shift, and go to state 6
     MIENTRAS     shift, and go to state 7
 
-    S               go to state 45
-    sentencia       go to state 9
+    sentencia       go to state 45
     sentencias      go to state 10
     expresion       go to state 11
     expr_booleanas  go to state 12
@@ -724,7 +723,7 @@ state 43
 
 state 44
 
-   24 bucle_while: MIENTRAS '(' expr_booleanas ')' . S FIN
+   24 bucle_while: MIENTRAS '(' expr_booleanas ')' . sentencia FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -734,8 +733,7 @@ state 44
     SI           shift, and go to state 6
     MIENTRAS     shift, and go to state 7
 
-    S               go to state 46
-    sentencia       go to state 9
+    sentencia       go to state 46
     sentencias      go to state 10
     expresion       go to state 11
     expr_booleanas  go to state 12
@@ -745,27 +743,55 @@ state 44
 
 state 45
 
-   23 sentencia_si: SI '(' expr_booleanas ')' S . FIN
+    3 sentencia: sentencia . sentencias
+   23 sentencia_si: SI '(' expr_booleanas ')' sentencia . FIN
 
-    FIN  shift, and go to state 47
+    VARIABLE     shift, and go to state 1
+    ENTERO       shift, and go to state 2
+    DECIMAL      shift, and go to state 3
+    COMENTARIO   shift, and go to state 4
+    COMENTARIOL  shift, and go to state 5
+    SI           shift, and go to state 6
+    FIN          shift, and go to state 47
+    MIENTRAS     shift, and go to state 7
+
+    sentencias      go to state 19
+    expresion       go to state 11
+    expr_booleanas  go to state 12
+    sentencia_si    go to state 13
+    bucle_while     go to state 14
 
 
 state 46
 
-   24 bucle_while: MIENTRAS '(' expr_booleanas ')' S . FIN
+    3 sentencia: sentencia . sentencias
+   24 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia . FIN
 
-    FIN  shift, and go to state 48
+    VARIABLE     shift, and go to state 1
+    ENTERO       shift, and go to state 2
+    DECIMAL      shift, and go to state 3
+    COMENTARIO   shift, and go to state 4
+    COMENTARIOL  shift, and go to state 5
+    SI           shift, and go to state 6
+    FIN          shift, and go to state 48
+    MIENTRAS     shift, and go to state 7
+
+    sentencias      go to state 19
+    expresion       go to state 11
+    expr_booleanas  go to state 12
+    sentencia_si    go to state 13
+    bucle_while     go to state 14
 
 
 state 47
 
-   23 sentencia_si: SI '(' expr_booleanas ')' S FIN .
+   23 sentencia_si: SI '(' expr_booleanas ')' sentencia FIN .
 
     $default  reduce using rule 23 (sentencia_si)
 
 
 state 48
 
-   24 bucle_while: MIENTRAS '(' expr_booleanas ')' S FIN .
+   24 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN .
 
     $default  reduce using rule 24 (bucle_while)
