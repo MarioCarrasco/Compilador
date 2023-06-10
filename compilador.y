@@ -18,80 +18,360 @@ int num_simbolos = 0;
       struct valores{
          char* nombre;
          int valInt;
-         double valDoub;
+         float valFloat;
+         char* valStr;
          char* tipo;
          struct ASTNode* nodo;
       } valores;
 }
 
-%token <sVal> VARIABLE '='
-%token <vInt> NUMERO
+%token <sVal> VARIABLE
+%token <vInt> ENTERO
+%token <fVal> DECIMAL
+%token <sVal> COMENTARIO COMENTARIOL
+%token <sVal> SI FIN
+%token <sVal> MIENTRAS
 
 %type <valores> sentencia
 %type <valores> expresion
+%type <valores> sentencias
+%type <valores> expr_booleanas
+%type <valores> sentencia_si
+%type <valores> bucle_while
 
-%left '+' '-'
+%left IGUALIGUAL MENOR MAYOR DIFERENTE
+%left '(' ')'
+%left '+' '-' '='
 %left '*' '/'
 %right '^'
 %start S
 %%
 
-S: expresion { generarCodigoIntermedio($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
-   |sentencia
-   |expresion S
-   |sentencia S
-   |
+S: sentencia { iniciarGCI($1.nodo);/*llamar al método generarCodigoIntermedio()*/}
    ;
 
-sentencia: expresion {printf(" El resultado es %d\n", $1.valInt); }
+sentencia: sentencias { $$.nodo = $1.nodo; }
+            | sentencia sentencias { $$.nodo = createASTNode("SS", -1, -1, $1.nodo, $2.nodo); }
+         ;
+
+sentencias: expresion { $$.nodo = $1.nodo; }
+   | COMENTARIO { /*No se hace nada con los comentarios, se obvian*/ }
+   | COMENTARIOL { /*No se hace nada con los comentarios, se obvian*/ }
    | VARIABLE '=' expresion {  
             printf("Tipo de la expresion: %s \n", $3.tipo);
-            if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
-               printf("Nuevo simbolo\n"); 
-               tabla_simbolos[num_simbolos].nombre = $1;
-               tabla_simbolos[num_simbolos].tipo = "entero";
-               tabla_simbolos[num_simbolos].valor = $3.valInt;
-               printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
-               printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
-               printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
-               num_simbolos++;
-            }
-            else{ // exixte simbolo, se actualiza
-               printf("Actualizamos simbolo\n"); 
-               for (int i = 0; i < num_simbolos; i++) {
-                  if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
-                     tabla_simbolos[num_simbolos].nombre = $1;
-                     tabla_simbolos[num_simbolos].tipo = "entero";
-                     tabla_simbolos[num_simbolos].valor = $3.valInt;
-                     printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].nombre);
-                     printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[num_simbolos].tipo);
-                     printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[num_simbolos].valor);
+            char* nuevoTipo = "";
+            if (strcmp($3.tipo, "entero") == 0){
+               nuevoTipo = "entero";
+               if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = $1;
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valor = $3.valInt;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
+                        tabla_simbolos[i].nombre = $1;
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valor = $3.valInt;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
+                     }
                   }
                }
             }
+            else if (strcmp($3.tipo, "decimal") == 0){
+               nuevoTipo = "decimal";
+               if(existe_simbolo($1,tabla_simbolos,num_simbolos)==0){ // no exixte simbolo, se crea
+                  printf("Nuevo simbolo\n"); 
+                  tabla_simbolos[num_simbolos].nombre = $1;
+                  tabla_simbolos[num_simbolos].tipo = nuevoTipo;
+                  tabla_simbolos[num_simbolos].valorFloat = $3.valFloat;
+                  printf("Nombre del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].nombre);
+                  printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
+                  printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valorFloat);
+                  num_simbolos++;
+               }
+               else{ // exixte simbolo, se actualiza
+                  printf("Actualizamos simbolo\n"); 
+                  for (int i = 0; i < num_simbolos; i++) {
+                     if (strcmp(tabla_simbolos[i].nombre, $1) == 0) {
+                        tabla_simbolos[i].nombre = $1;
+                        tabla_simbolos[i].tipo = nuevoTipo;
+                        tabla_simbolos[i].valorFloat = $3.valFloat;
+                        printf("Nombre del simbolo actualizado: %s\n", tabla_simbolos[i].nombre);
+                        printf("Tipo del simbolo actualizado: %s\n", tabla_simbolos[i].tipo);
+                        printf("Valor del simbolo actualizado: %f\n", tabla_simbolos[i].valorFloat);
+                     }
+                  }
+               }
+            }
+
+
             struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
             $$.nodo = createASTNode("asignacion", -1, -1, temp, $3.nodo);
          }
       ;
 
-expresion: NUMERO { $$.valInt = $1; $$.nodo = createASTNode("numero", $1, -1, NULL, NULL); $$.tipo = "entero"; /*Añadir opcion para float*/}
+expresion: ENTERO { $$.valInt = $1; 
+                  $$.valFloat = (float)$1;
+                  $$.nodo = createASTNode("entero", $1, (float)$1, NULL, NULL); $$.tipo = "entero"; 
+                  }
+         | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNode("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
-               int temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
-               $$.valInt = temp2;
-               $$.nodo = createASTNode("variable", temp2, -1, NULL, NULL);
+               int temp2;
+               float temp3;
+               if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="entero"){
+                  temp2 = buscar_simbolo($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  $$.valInt = temp2;
+                  $$.tipo = "entero";
+                  printf("Nuevo valor: %d\n", temp2);
+                  $$.nodo = createASTNode("variable", temp2, (float)temp2, NULL, NULL);
+               }
+               else if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="decimal"){
+                  temp3 = buscar_simboloFloat($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
+                  $$.valFloat = temp3;
+                  $$.tipo = "decimal";
+                  printf("Nuevo valor: %f\n", temp3);
+                  $$.nodo = createASTNode("variable", -1, temp3, NULL, NULL);
+               }
+               else{
+                  printf("Error en linea %d: Tipo de la variable %s no observado\n",yylineno, $1);
+                  exit(1);
+               }
             }
             else{
-               fprintf(yyout, "Error en la linea %s: variable '%s' no declarada\n",yylineno, $1);
-               // cazar error de variable no declarada
+               printf("Error en linea %d: variable '%s' no declarada\n",yylineno, $1);// cazar error de variable no declarada
+               exit(1);
             }
          }
-         | expresion '+' expresion { printf("En la linea %d", yylineno); printf(" entra en la suma: %d + %d\n", $1.valInt, $3.valInt); $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '-' expresion { $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '*' expresion { $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '/' expresion { $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo); }
-         | expresion '^' expresion { $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo); }
+         | expresion '+' expresion {
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  /*else if (strcmp($1.tipo, "string") == 0){
+                     printf("En la linea %d entra en la concatenacion: %s + %s\n", yylineno, $1.valStr, $3.valStr);
+                  }*/
+                  else{
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+                     printf("Error en linea %d: No se pueden operar numeros con strings\n",yylineno);
+                     exit(1);
+                  }
+                  else if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la suma: %d + %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la suma: %f + %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); 
+            }
+         | expresion '-' expresion { 
+               if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", yylineno);
+                     exit(1);
+               }
+               if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la resta: %d - %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la resta: %f - %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '*' expresion { 
+               if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '/' expresion { 
+               if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp($3.tipo, "entero") == 0 && $3.valInt == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  exit(1);
+               }
+               else if (strcmp($3.tipo, "decimal") == 0 && $3.valFloat == 0){
+                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  exit(1);
+               }
+               else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la division de enteros: %d / %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la division: %d / %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la division: %f / %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo);
+            }
+         | expresion '^' expresion { 
+               if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", yylineno);
+                     exit(1);
+               }
+               else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
+                  if (strcmp($1.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", yylineno, $1.valInt, $3.valInt);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", yylineno, $1.valFloat, $3.valFloat);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               else {
+                  if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
+                     printf("En la linea %d entra en la potencia: %d ^ %f\n", yylineno, $1.valInt, $3.valFloat);
+                  }
+                  else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
+                     printf("En la linea %d entra en la potencia: %f ^ %d\n", yylineno, $1.valFloat, $3.valInt);
+                  }
+                  else{
+                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     exit(1);
+                  }
+               }
+               $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo);
+            }
+         // EXPRESIONES BOOLEANAS
+         | expr_booleanas { $$.nodo = $1.nodo; }
+         | sentencia_si { $$.nodo = $1.nodo; }
+         | bucle_while { $$.nodo = $1.nodo; }
       ;
+
+expr_booleanas: expresion MAYOR expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNode("mayor", -1, -1, $1.nodo, $3.nodo);
+            }
+         }
+         | expresion MENOR expresion{
+               if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNode("menor", -1, -1, $1.nodo, $3.nodo);
+            }
+         }
+         | expresion IGUALIGUAL expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNode("igualigual", -1, -1, $1.nodo, $3.nodo);
+            }         
+         }
+         | expresion DIFERENTE expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNode("diferente", -1, -1, $1.nodo, $3.nodo);
+            }
+         }
+      ;
+
+sentencia_si: SI '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("si", -1, -1, $3.nodo, $5.nodo); }
+      ;
+
+bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("mientras", -1, -1, $3.nodo, $5.nodo); }
+      ;
+
 
 %%
 extern FILE* yyin;

@@ -7,7 +7,7 @@ struct ASTNode{
     int valInt;
     float valFloat;
     //char* valStr;
-    char* type;               // Tipo de nodo (operador, identificador, número, etc)
+    char* type;             // Tipo de nodo (operador, identificador, número, etc)
     struct ASTNode* left;   // Puntero al hijo izquierdo
     struct ASTNode* right;  // Puntero al hijo derecho
 };
@@ -23,6 +23,14 @@ struct ASTNode* createASTNode(char* type, int valInt, float valFloat/*, char* va
     return node;
 }
 
+void iniciarGCI(struct ASTNode* node) {
+    // imprimimos el .data y llamamos al método con el que recorreremos el AST
+    fprintf(yyout, ".data\n\n");
+
+    fprintf(yyout, ".text\n");
+    generarCodigoIntermedio(node);
+}
+
 void generarCodigoIntermedio(struct ASTNode* node) {
     if (node == NULL) {
         return;
@@ -30,23 +38,90 @@ void generarCodigoIntermedio(struct ASTNode* node) {
 
     // Generar código intermedio para el nodo actual
     //VARIABLES TEMP
-
-    if (strcmp(node->type, "suma") == 0) {
-            printf("\nentra en suma ");
-            printf("%d\n",node->type);
-            fprintf(yyout, "ADD %d, %d\n", node->left->valInt, node->right->valInt);
+    if (strcmp(node->type, "SS") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "SS\n");
+    }
+    else if (strcmp(node->type, "diferente") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "DIFERENTE\n");
+    }
+    else if (strcmp(node->type, "igualigual") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "IGUALIGUAL\n");
+    }
+    else if (strcmp(node->type, "menor") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "MENOR\n");
+    }
+    else if (strcmp(node->type, "mayor") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "MAYOR\n");
+    }
+    else if (strcmp(node->type, "decimal") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "DECIMAL\n");
+    }
+    else if (strcmp(node->type, "decimal") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "DECIMAL\n");
+    }
+    else if (strcmp(node->type, "entero") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "ENTERO\n");
+    }
+    else if (strcmp(node->type, "asignacion") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "ASIGNACION\n");
+    }
+    else if (strcmp(node->type, "variable") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "VARIABLE\n");
+    }
+    else if (strcmp(node->type, "suma") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "SUMA\n");
     }
     else if (strcmp(node->type, "resta") == 0) {
-        fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "RESTA\n");
     }
     else if (strcmp(node->type, "multiplicacion") == 0) {
-        fprintf(yyout, "IMUL %d, %d\n", node->left, node->right);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "MULTIPLICACION\n");
     }
     else if (strcmp(node->type, "division") == 0) {
-        fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "DIVISION\n");
     }
     else if (strcmp(node->type, "potencia") == 0) {
-        fprintf(yyout, "SUB %d, %d\n", node->left, node->right);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "POTENCIA\n");
+    }
+    else if (strcmp(node->type, "si") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "SI\n");
+    }
+    else if (strcmp(node->type, "mientras") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "MIENTRAS\n");
     }
     else {
         printf("entra en default ");
