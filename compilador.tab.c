@@ -452,9 +452,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    50,    50,    53,    54,    57,    58,    59,    60,   122,
-     126,   127,   155,   189,   220,   251,   290,   322,   323,   324,
-     327,   337,   347,   357,   369,   372
+       0,    50,    50,    53,    54,    57,    58,    59,    60,   123,
+     127,   128,   156,   190,   221,   252,   291,   323,   324,   325,
+     328,   338,   348,   358,   370,   373
 };
 #endif
 
@@ -1465,6 +1465,7 @@ yyreduce:
                      }
                   }
                }
+               // crear nodo?
             }
             else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
                nuevoTipo = "decimal";
@@ -1502,24 +1503,24 @@ yyreduce:
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 122 "compilador.y"
+#line 123 "compilador.y"
     { (yyval.valores).valInt = (yyvsp[(1) - (1)].vInt); 
                   (yyval.valores).valFloat = (float)(yyvsp[(1) - (1)].vInt);
-                  (yyval.valores).nodo = createASTNode("entero", (yyvsp[(1) - (1)].vInt), (float)(yyvsp[(1) - (1)].vInt), NULL, NULL); (yyval.valores).tipo = "entero"; 
+                  (yyval.valores).nodo = createASTNodeRegistro("entero", (yyvsp[(1) - (1)].vInt), (float)(yyvsp[(1) - (1)].vInt), NULL, NULL); (yyval.valores).tipo = "entero"; 
                   ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 126 "compilador.y"
-    { (yyval.valores).valFloat = (yyvsp[(1) - (1)].fVal); (yyval.valores).nodo = createASTNode("decimal", -1, (yyvsp[(1) - (1)].fVal), NULL, NULL); (yyval.valores).tipo = "decimal"; ;}
+#line 127 "compilador.y"
+    { (yyval.valores).valFloat = (yyvsp[(1) - (1)].fVal); (yyval.valores).nodo = createASTNodeRegistro("decimal", -1, (yyvsp[(1) - (1)].fVal), NULL, NULL); (yyval.valores).tipo = "decimal"; ;}
     break;
 
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 127 "compilador.y"
+#line 128 "compilador.y"
     { printf("entra en variable\n"); 
             if(existe_simbolo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)==1){
                int temp2;
@@ -1529,22 +1530,22 @@ yyreduce:
                   (yyval.valores).valInt = temp2;
                   (yyval.valores).tipo = "entero";
                   printf("Nuevo valor: %d\n", temp2);
-                  (yyval.valores).nodo = createASTNode("variable", temp2, (float)temp2, NULL, NULL);
+                  (yyval.valores).nodo = createASTNodeRegistro("variable", temp2, (float)temp2, NULL, NULL);
                }
                else if (buscar_tipo((yyvsp[(1) - (1)].sVal), tabla_simbolos, num_simbolos)=="decimal"){
                   temp3 = buscar_simboloFloat((yyvsp[(1) - (1)].sVal),tabla_simbolos,num_simbolos);// solo funciona para valores enteros
                   (yyval.valores).valFloat = temp3;
                   (yyval.valores).tipo = "decimal";
                   printf("Nuevo valor: %f\n", temp3);
-                  (yyval.valores).nodo = createASTNode("variable", -1, temp3, NULL, NULL);
+                  (yyval.valores).nodo = createASTNodeRegistro("variable", -1, temp3, NULL, NULL);
                }
                else{
-                  printf("Error en linea %d: Tipo de la variable %s no observado\n",yylineno, (yyvsp[(1) - (1)].sVal));
+                  printf("Error en linea %d: Tipo de la variable %s no observado\n",(yylineno-1)-1, (yyvsp[(1) - (1)].sVal));
                   exit(1);
                }
             }
             else{
-               printf("Error en linea %d: variable '%s' no declarada\n",yylineno, (yyvsp[(1) - (1)].sVal));// cazar error de variable no declarada
+               printf("Error en linea %d: variable '%s' no declarada\n",(yylineno-1), (yyvsp[(1) - (1)].sVal));// cazar error de variable no declarada
                exit(1);
             }
          ;}
@@ -1553,36 +1554,36 @@ yyreduce:
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 155 "compilador.y"
+#line 156 "compilador.y"
     {
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   /*else if (strcmp($1.tipo, "string") == 0){
-                     printf("En la linea %d entra en la concatenacion: %s + %s\n", yylineno, $1.valStr, $3.valStr);
+                     printf("En la linea %d entra en la concatenacion: %s + %s\n", (yylineno-1), $1.valStr, $3.valStr);
                   }*/
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-                     printf("Error en linea %d: No se pueden operar numeros con strings\n",yylineno);
+                     printf("Error en linea %d: No se pueden operar numeros con strings\n",(yylineno-1));
                      exit(1);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la suma: %d + %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la suma: %d + %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la suma: %f + %d\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la suma: %f + %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
@@ -1593,33 +1594,33 @@ yyreduce:
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 189 "compilador.y"
+#line 190 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", yylineno);
+                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", (yylineno-1));
                      exit(1);
                }
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la resta: %d - %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la resta: %d - %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la resta: %f - %d\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la resta: %f - %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
@@ -1630,33 +1631,33 @@ yyreduce:
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 220 "compilador.y"
+#line 221 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", (yylineno-1));
                      exit(1);
                }
                else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
@@ -1667,41 +1668,41 @@ yyreduce:
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 251 "compilador.y"
+#line 252 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", (yylineno-1));
                      exit(1);
                }
                else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0 && (yyvsp[(3) - (3)].valores).valInt == 0){
-                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  printf("Error en linea %d: No se puede dividir entre 0\n",(yylineno-1));
                   exit(1);
                }
                else if (strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0 && (yyvsp[(3) - (3)].valores).valFloat == 0){
-                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  printf("Error en linea %d: No se puede dividir entre 0\n",(yylineno-1));
                   exit(1);
                }
                else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la division de enteros: %d / %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la division de enteros: %d / %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la division de decimales: %f / %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la division: %d / %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la division: %d / %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la division: %f / %d\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la division: %f / %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
@@ -1712,33 +1713,33 @@ yyreduce:
   case 16:
 
 /* Line 1464 of yacc.c  */
-#line 290 "compilador.y"
+#line 291 "compilador.y"
     { 
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", (yylineno-1));
                      exit(1);
                }
                else if (strcmp((yyvsp[(1) - (3)].valores).tipo, (yyvsp[(3) - (3)].valores).tipo) == 0){ // si los tipos son el mismo
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp((yyvsp[(1) - (3)].valores).tipo, "entero") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la potencia: %d ^ %f\n", yylineno, (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
+                     printf("En la linea %d entra en la potencia: %d ^ %f\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valInt, (yyvsp[(3) - (3)].valores).valFloat);
                   }
                   else if (strcmp((yyvsp[(1) - (3)].valores).tipo, "decimal") == 0 && strcmp((yyvsp[(3) - (3)].valores).tipo, "entero") == 0){
-                     printf("En la linea %d entra en la potencia: %f ^ %d\n", yylineno, (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
+                     printf("En la linea %d entra en la potencia: %f ^ %d\n", (yylineno-1), (yyvsp[(1) - (3)].valores).valFloat, (yyvsp[(3) - (3)].valores).valInt);
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
@@ -1749,31 +1750,31 @@ yyreduce:
   case 17:
 
 /* Line 1464 of yacc.c  */
-#line 322 "compilador.y"
+#line 323 "compilador.y"
     { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
     break;
 
   case 18:
 
 /* Line 1464 of yacc.c  */
-#line 323 "compilador.y"
+#line 324 "compilador.y"
     { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
     break;
 
   case 19:
 
 /* Line 1464 of yacc.c  */
-#line 324 "compilador.y"
+#line 325 "compilador.y"
     { (yyval.valores).nodo = (yyvsp[(1) - (1)].valores).nodo; ;}
     break;
 
   case 20:
 
 /* Line 1464 of yacc.c  */
-#line 327 "compilador.y"
+#line 328 "compilador.y"
     {
             if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
@@ -1786,10 +1787,10 @@ yyreduce:
   case 21:
 
 /* Line 1464 of yacc.c  */
-#line 337 "compilador.y"
+#line 338 "compilador.y"
     {
                if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
@@ -1802,10 +1803,10 @@ yyreduce:
   case 22:
 
 /* Line 1464 of yacc.c  */
-#line 347 "compilador.y"
+#line 348 "compilador.y"
     {
             if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
@@ -1818,10 +1819,10 @@ yyreduce:
   case 23:
 
 /* Line 1464 of yacc.c  */
-#line 357 "compilador.y"
+#line 358 "compilador.y"
     {
             if (strcmp((yyvsp[(1) - (3)].valores).tipo, "string") == 0 || strcmp((yyvsp[(3) - (3)].valores).tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
@@ -1834,21 +1835,21 @@ yyreduce:
   case 24:
 
 /* Line 1464 of yacc.c  */
-#line 369 "compilador.y"
+#line 370 "compilador.y"
     { (yyval.valores).nodo = createASTNode("si", -1, -1, (yyvsp[(3) - (6)].valores).nodo, (yyvsp[(5) - (6)].valores).nodo); ;}
     break;
 
   case 25:
 
 /* Line 1464 of yacc.c  */
-#line 372 "compilador.y"
+#line 373 "compilador.y"
     { (yyval.valores).nodo = createASTNode("mientras", -1, -1, (yyvsp[(3) - (6)].valores).nodo, (yyvsp[(5) - (6)].valores).nodo); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1852 "compilador.tab.c"
+#line 1853 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2060,7 +2061,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 376 "compilador.y"
+#line 377 "compilador.y"
 
 extern FILE* yyin;
 extern FILE* yyout;

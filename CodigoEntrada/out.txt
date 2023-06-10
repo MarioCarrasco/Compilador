@@ -1,38 +1,38 @@
 .data
 
 .text
-SS
-SS
-SS
-SS
-SS
-SS
-SS
-ASIGNACION
-VARIABLE
-ENTERO
-ASIGNACION
-VARIABLE
-DECIMAL
-DIVISION
-VARIABLE
-ENTERO
-ASIGNACION
-VARIABLE
-ENTERO
+--SS--
+--SS--
+--SS--
+--SS--
+--SS--
+--SS--
+--SS--
+move $t1, $t2
+--VARIABLE--
+--ENTERO--
+move $t1, $t2
+--VARIABLE--
+--DECIMAL--
+div  $t3, $t0, $t1
+--VARIABLE--
+--ENTERO--
+move $t1, $t2
+--VARIABLE--
+--ENTERO--
 MIENTRAS
-MENOR
-VARIABLE
-ENTERO
-ASIGNACION
-VARIABLE
-SUMA
-VARIABLE
-ENTERO
+blt $t1, $t2, correcto
+--VARIABLE--
+--ENTERO--
+move $t1, $t2
+--VARIABLE--
+add $t2, $t0, $t1
+--VARIABLE--
+--ENTERO--
 SI
-MAYOR
-ENTERO
-ENTERO
-SUMA
-ENTERO
-ENTERO
+bgt $t1, $t2, correcto
+--ENTERO--
+--ENTERO--
+add $t2, $t0, $t1
+--ENTERO--
+--ENTERO--

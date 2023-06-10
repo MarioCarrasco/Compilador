@@ -3,7 +3,7 @@
 que tal*/
 var=4
 var=8.4
-var/9
+var/2
 var2=0
 mientras (var2<10)
     var2 = var2 + 1
