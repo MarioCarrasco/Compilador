@@ -1,38 +1,15 @@
 .data
+var0: .float 9.000000
+var1: .float 5.000000
+var2: .float 30.000000
+var3: .float 6.000000
+var4: .float 30.000000
 
 .text
---SS--
---SS--
---SS--
---SS--
---SS--
---SS--
---SS--
-move $t1, $t2
---VARIABLE--
---ENTERO--
-move $t1, $t2
---VARIABLE--
---DECIMAL--
-div  $t3, $t0, $t1
---VARIABLE--
---ENTERO--
-move $t1, $t2
---VARIABLE--
---ENTERO--
-MIENTRAS
-blt $t1, $t2, correcto
---VARIABLE--
---ENTERO--
-move $t1, $t2
---VARIABLE--
-add $t2, $t0, $t1
---VARIABLE--
---ENTERO--
-SI
-bgt $t1, $t2, correcto
---ENTERO--
---ENTERO--
-add $t2, $t0, $t1
---ENTERO--
---ENTERO--
+lwc1 $f0, var0
+lwc1 $f1, var1
+add.s $f2, $f0, $f1
+lwc1 $f4, var2
+lwc1 $f6, var3
+lwc1 $f7, var4
+add.s $f8, $f6, $f7
