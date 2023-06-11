@@ -102,32 +102,64 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         generarCodigoIntermedio(node->right);
     }
     else if (strcmp(node->type, "diferente") == 0) {
+        v = eval(a->l) != eval(a->r);
         printf("entra en ");
         printf("%s\n",node->type);
-        fprintf(yyout, "bne $f1, $f2, correcto\n");
+        fprintf(yyout, " c.eq.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+
+        // se ve si son iguales y con bc1f "etiqueta", si el flag de condicion es 0 (false), se entra en la etiqueta
+
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "igualigual") == 0) {
+        v = eval(a->l) == eval(a->r);
         printf("entra en ");
         printf("%s\n",node->type);
         printf("%d\n",node->left->registro);
         printf("%d\n",node->right->registro);
-        /*fprintf(yyout, "lw $t0, %s\n", node->left->valFloat);
-        fprintf(yyout, "lw $t0, %s\n", node->right->valFloat);*/
-        fprintf(yyout, "beq $f1, $f2, correcto\n");
+        fprintf(yyout, " c.eq.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+
+        // se ve si son iguales y con bc1t "etiqueta", si el flag de condicion es 1 (true), se entra en la etiqueta
+        
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "menor") == 0) {
+        v = eval(a->l) < eval(a->r);
         printf("entra en ");
         printf("%s\n",node->type);
-        printf("%d\n",node->left->registro);
-        printf("%d\n",node->right->registro);
-        fprintf(yyout, "blt $f1, $f2, correcto\n");
+        fprintf(yyout, "c.lt.s $f%d, $f%d\n", node->left->registro, node->right->registro);
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "mayor") == 0) {
+        v = eval(a->l) > eval(a->r);
         printf("entra en ");
         printf("%s\n",node->type);
         printf("%d\n",node->left->registro);
         printf("%d\n",node->right->registro);
-        fprintf(yyout, "bgt $f1, $f2, correcto\n");
+        fprintf(yyout, "c.lt.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
+    }
+    else if (strcmp(node->type, "menorigual") == 0) {
+        v = eval(a->l) <= eval(a->r);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        fprintf(yyout, "c.le.s $f%d, $f%d\n", node->left->registro, node->right->registro);
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
+    }
+    else if (strcmp(node->type, "mayorigual") == 0) {
+        v = eval(a->l) >= eval(a->r);
+        printf("entra en ");
+        printf("%s\n",node->type);
+        printf("%d\n",node->left->registro);
+        printf("%d\n",node->right->registro);
+        fprintf(yyout, "c.le.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+        liberarRegistro(node->left);
+        liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "decimal") == 0) {
         printf("entra en ");
@@ -214,12 +246,12 @@ float generarCodigoIntermedio(struct ASTNode* node) {
     else if (strcmp(node->type, "si") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
-        fprintf(yyout, "SI\n");
+        fprintf(yyout, "TODO: SI\n");
     }
     else if (strcmp(node->type, "mientras") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
-        fprintf(yyout, "MIENTRAS\n");
+        fprintf(yyout, "TODO: MIENTRAS\n");
     }
     else { // ERROR
         printf("entra en default ");

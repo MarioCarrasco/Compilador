@@ -39,7 +39,7 @@ int num_simbolos = 0;
 %type <valores> sentencia_si
 %type <valores> bucle_while
 
-%left IGUALIGUAL MENOR MAYOR DIFERENTE
+%left IGUALIGUAL MENOR MAYOR DIFERENTE MENORIGUAL MAYORIGUAL
 %left '(' ')'
 %left '+' '-' '='
 %left '*' '/'
@@ -358,6 +358,7 @@ expr_booleanas: expresion MAYOR expresion{
             else{
                $$.tipo = "bool";
                $$.nodo = createASTNodeRegistro("mayor", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo > $3.nodo;
             }
          }
          | expresion MENOR expresion{
@@ -368,6 +369,7 @@ expr_booleanas: expresion MAYOR expresion{
             else{
                $$.tipo = "bool";
                $$.nodo = createASTNodeRegistro("menor", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo < $3.nodo;
             }
          }
          | expresion IGUALIGUAL expresion{
@@ -378,6 +380,7 @@ expr_booleanas: expresion MAYOR expresion{
             else{
                $$.tipo = "bool";
                $$.nodo = createASTNodeRegistro("igualigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo == $3.nodo;
             }         
          }
          | expresion DIFERENTE expresion{
@@ -388,6 +391,29 @@ expr_booleanas: expresion MAYOR expresion{
             else{
                $$.tipo = "bool";
                $$.nodo = createASTNodeRegistro("diferente", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo != $3.nodo;
+            }
+         }
+         | expresion MENORIGUAL expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNodeRegistro("menorigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo <= $3.nodo;
+            }         
+         }
+         | expresion MAYORIGUAL expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNodeRegistro("mayorigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo >= $3.nodo;
             }
          }
       ;
