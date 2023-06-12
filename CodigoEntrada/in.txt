@@ -1,13 +1,3 @@
-#comentario de prueba
-/*hola
-que tal*/
-var=4
-var=8.4
-var/9
-var2=0
-mientras (var2<10)
-    var2 = var2 + 1
-fin
-si (10>10) 
-    1+1
-fin
+var=9+5
+var=30
+6+var

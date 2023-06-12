@@ -39,7 +39,7 @@ int num_simbolos = 0;
 %type <valores> sentencia_si
 %type <valores> bucle_while
 
-%left IGUALIGUAL MENOR MAYOR DIFERENTE
+%left IGUALIGUAL MENOR MAYOR DIFERENTE MENORIGUAL MAYORIGUAL
 %left '(' ')'
 %left '+' '-' '='
 %left '*' '/'
@@ -85,6 +85,7 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                      }
                   }
                }
+               // crear nodo?
             }
             else if (strcmp($3.tipo, "decimal") == 0){
                nuevoTipo = "decimal";
@@ -113,17 +114,16 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                }
             }
 
-
             struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
-            $$.nodo = createASTNode("asignacion", -1, -1, temp, $3.nodo);
+            $$.nodo = createASTNodeRegistro("asignacion", -1, -1, temp, $3.nodo);
          }
       ;
 
 expresion: ENTERO { $$.valInt = $1; 
                   $$.valFloat = (float)$1;
-                  $$.nodo = createASTNode("entero", $1, (float)$1, NULL, NULL); $$.tipo = "entero"; 
+                  $$.nodo = createASTNodeRegistroDeclarar("entero", $1, (float)$1, NULL, NULL); $$.tipo = "entero"; 
                   }
-         | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNode("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
+         | DECIMAL { $$.valFloat = $1; $$.nodo = createASTNodeRegistroDeclarar("decimal", -1, $1, NULL, NULL); $$.tipo = "decimal"; }
          | VARIABLE { printf("entra en variable\n"); 
             if(existe_simbolo($1, tabla_simbolos, num_simbolos)==1){
                int temp2;
@@ -133,190 +133,216 @@ expresion: ENTERO { $$.valInt = $1;
                   $$.valInt = temp2;
                   $$.tipo = "entero";
                   printf("Nuevo valor: %d\n", temp2);
-                  $$.nodo = createASTNode("variable", temp2, (float)temp2, NULL, NULL);
+                  $$.nodo = createASTNodeRegistroDeclarar("variable", temp2, (float)temp2, NULL, NULL);
                }
                else if (buscar_tipo($1, tabla_simbolos, num_simbolos)=="decimal"){
                   temp3 = buscar_simboloFloat($1,tabla_simbolos,num_simbolos);// solo funciona para valores enteros
                   $$.valFloat = temp3;
                   $$.tipo = "decimal";
                   printf("Nuevo valor: %f\n", temp3);
-                  $$.nodo = createASTNode("variable", -1, temp3, NULL, NULL);
+                  $$.nodo = createASTNodeRegistroDeclarar("variable", -1, temp3, NULL, NULL);
                }
                else{
-                  printf("Error en linea %d: Tipo de la variable %s no observado\n",yylineno, $1);
+                  printf("Error en linea %d: Tipo de la variable %s no observado\n",(yylineno-1)-1, $1);
                   exit(1);
                }
             }
             else{
-               printf("Error en linea %d: variable '%s' no declarada\n",yylineno, $1);// cazar error de variable no declarada
+               printf("Error en linea %d: variable '%s' no declarada\n",(yylineno-1), $1);// cazar error de variable no declarada
                exit(1);
             }
          }
          | expresion '+' expresion {
                if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", yylineno, $1.valInt, $3.valInt);
+                     printf("En la linea %d entra en la suma de enteros: %d + %d\n", (yylineno-1), $1.valInt, $3.valInt);
+                     $$.valFloat = $1.valInt + $3.valInt;
+                     $$.valInt = $1.valInt + $3.valInt;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", yylineno, $1.valFloat, $3.valFloat);
+                     printf("En la linea %d entra en la suma de decimales: %f + %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
+                     $$.valFloat = $1.valFloat + $3.valFloat;
                   }
                   /*else if (strcmp($1.tipo, "string") == 0){
-                     printf("En la linea %d entra en la concatenacion: %s + %s\n", yylineno, $1.valStr, $3.valStr);
+                     printf("En la linea %d entra en la concatenacion: %s + %s\n", (yylineno-1), $1.valStr, $3.valStr);
                   }*/
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %d: No se pueden operar numeros con strings\n",yylineno);
+                     printf("Error en linea %d: No se pueden operar numeros con strings\n",(yylineno-1));
                      exit(1);
                   }
                   else if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la suma: %d + %f\n", yylineno, $1.valInt, $3.valFloat);
+                     printf("En la linea %d entra en la suma: %d + %f\n", (yylineno-1), $1.valInt, $3.valFloat);
+                     $$.valFloat = $1.valInt + $3.valFloat;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la suma: %f + %d\n", yylineno, $1.valFloat, $3.valInt);
+                     printf("En la linea %d entra en la suma: %f + %d\n", (yylineno-1), $1.valFloat, $3.valInt);
+                     $$.valFloat = $1.valFloat + $3.valInt;
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
-               $$.nodo = createASTNode("suma", -1, -1, $1.nodo, $3.nodo); 
+               $$.nodo = createASTNodeRegistro("suma", -1, -1, $1.nodo, $3.nodo); 
             }
          | expresion '-' expresion { 
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", yylineno);
+                     printf("Error en linea %d: No se puede realizar la operación 'resta' con un string\n", (yylineno-1));
                      exit(1);
                }
                if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", yylineno, $1.valInt, $3.valInt);
+                     printf("En la linea %d entra en la resta de enteros: %d - %d\n", (yylineno-1), $1.valInt, $3.valInt);
+                     $$.valFloat = $1.valInt - $3.valInt;
+                     $$.valInt = $1.valInt - $3.valInt;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", yylineno, $1.valFloat, $3.valFloat);
+                     printf("En la linea %d entra en la resta de decimales: %f - %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
+                     $$.valFloat = $1.valFloat - $3.valFloat;
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la resta: %d - %f\n", yylineno, $1.valInt, $3.valFloat);
+                     printf("En la linea %d entra en la resta: %d - %f\n", (yylineno-1), $1.valInt, $3.valFloat);
+                     $$.valFloat = $1.valInt - $3.valFloat;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la resta: %f - %d\n", yylineno, $1.valFloat, $3.valInt);
+                     printf("En la linea %d entra en la resta: %f - %d\n", (yylineno-1), $1.valFloat, $3.valInt);
+                     $$.valFloat = $1.valFloat - $3.valInt;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
-               $$.nodo = createASTNode("resta", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("resta", -1, -1, $1.nodo, $3.nodo);
             }
          | expresion '*' expresion { 
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'multiplicacion' con un string\n", (yylineno-1));
                      exit(1);
                }
                else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", yylineno, $1.valInt, $3.valInt);
+                     printf("En la linea %d entra en la multiplicacion de enteros: %d * %d\n", (yylineno-1), $1.valInt, $3.valInt);
+                     $$.valFloat = $1.valInt * $3.valInt;
+                     $$.valInt = $1.valInt * $3.valInt;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", yylineno, $1.valFloat, $3.valFloat);
+                     printf("En la linea %d entra en la multiplicacion de decimales: %f * %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
+                     $$.valFloat = $1.valFloat * $3.valFloat;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", yylineno, $1.valInt, $3.valFloat);
+                     printf("En la linea %d entra en la multiplicacion: %d * %f\n", (yylineno-1), $1.valInt, $3.valFloat);
+                     $$.valFloat = $1.valInt * $3.valFloat;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", yylineno, $1.valFloat, $3.valInt);
+                     printf("En la linea %d entra en la multiplicacion: %f * %d\n", (yylineno-1), $1.valFloat, $3.valInt);
+                     $$.valFloat = $1.valFloat * $3.valInt;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
-               $$.nodo = createASTNode("multiplicacion", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("multiplicacion", -1, -1, $1.nodo, $3.nodo);
             }
          | expresion '/' expresion { 
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'division' con un string\n", (yylineno-1));
                      exit(1);
                }
+               // control semantico sobre las divisiones entre 0
                else if (strcmp($3.tipo, "entero") == 0 && $3.valInt == 0){
-                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  printf("Error en linea %d: No se puede dividir entre 0\n",(yylineno-1));
                   exit(1);
                }
                else if (strcmp($3.tipo, "decimal") == 0 && $3.valFloat == 0){
-                  printf("Error en linea %d: No se puede dividir entre 0\n",yylineno);
+                  printf("Error en linea %d: No se puede dividir entre 0\n",(yylineno-1));
                   exit(1);
                }
                else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la division de enteros: %d / %d\n", yylineno, $1.valInt, $3.valInt);
+                     printf("En la linea %d entra en la division de enteros: %d / %d\n", (yylineno-1), $1.valInt, $3.valInt);
+                     $$.valFloat = $1.valInt / $3.valInt;
+                     $$.valInt = $1.valInt / $3.valInt;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la division de decimales: %f / %f\n", yylineno, $1.valFloat, $3.valFloat);
+                     printf("En la linea %d entra en la division de decimales: %f / %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
+                     $$.valFloat = $1.valFloat / $3.valFloat;
                   }
                   else{
-                     printf("Error en linea %d: Error de tipos\n",yylineno);
+                     printf("Error en linea %d: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la division: %d / %f\n", yylineno, $1.valInt, $3.valFloat);
+                     printf("En la linea %d entra en la division: %d / %f\n", (yylineno-1), $1.valInt, $3.valFloat);
+                     $$.valFloat = $1.valInt / $3.valFloat;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la division: %f / %d\n", yylineno, $1.valFloat, $3.valInt);
+                     printf("En la linea %d entra en la division: %f / %d\n", (yylineno-1), $1.valFloat, $3.valInt);
+                     $$.valFloat = $1.valFloat / $3.valInt;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
-               $$.nodo = createASTNode("division", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("division", -1, -1, $1.nodo, $3.nodo);
             }
          | expresion '^' expresion { 
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", yylineno);
+                     printf("Error en linea %s: No se puede realizar la operación 'potencia' con un string\n", (yylineno-1));
                      exit(1);
                }
                else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", yylineno, $1.valInt, $3.valInt);
+                     printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", (yylineno-1), $1.valInt, $3.valInt);
+                     $$.valFloat = $1.valInt ^ $3.valInt;
+                     $$.valInt = $1.valInt ^ $3.valInt;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", yylineno, $1.valFloat, $3.valFloat);
+                     printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
+                     $$.valFloat = $1.valFloat ^ $3.valFloat;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
                else {
                   if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
-                     printf("En la linea %d entra en la potencia: %d ^ %f\n", yylineno, $1.valInt, $3.valFloat);
+                     printf("En la linea %d entra en la potencia: %d ^ %f\n", (yylineno-1), $1.valInt, $3.valFloat);
+                     $$.valFloat = $1.valInt ^ $3.valFloat;
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
-                     printf("En la linea %d entra en la potencia: %f ^ %d\n", yylineno, $1.valFloat, $3.valInt);
+                     printf("En la linea %d entra en la potencia: %f ^ %d\n", (yylineno-1), $1.valFloat, $3.valInt);
+                     $$.valFloat = $1.valFloat ^ $3.valInt;
                   }
                   else{
-                     printf("Error en linea %s: Error de tipos\n",yylineno);
+                     printf("Error en linea %s: Error de tipos\n",(yylineno-1));
                      exit(1);
                   }
                }
-               $$.nodo = createASTNode("potencia", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("potencia", -1, -1, $1.nodo, $3.nodo);
             }
          // EXPRESIONES BOOLEANAS
          | expr_booleanas { $$.nodo = $1.nodo; }
@@ -326,42 +352,68 @@ expresion: ENTERO { $$.valInt = $1;
 
 expr_booleanas: expresion MAYOR expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
                $$.tipo = "bool";
-               $$.nodo = createASTNode("mayor", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("mayor", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo > $3.nodo;
             }
          }
          | expresion MENOR expresion{
                if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
                $$.tipo = "bool";
-               $$.nodo = createASTNode("menor", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("menor", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo < $3.nodo;
             }
          }
          | expresion IGUALIGUAL expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
                $$.tipo = "bool";
-               $$.nodo = createASTNode("igualigual", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("igualigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo == $3.nodo;
             }         
          }
          | expresion DIFERENTE expresion{
             if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
-               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",yylineno);
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
                exit(1);
             }
             else{
                $$.tipo = "bool";
-               $$.nodo = createASTNode("diferente", -1, -1, $1.nodo, $3.nodo);
+               $$.nodo = createASTNodeRegistro("diferente", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo != $3.nodo;
+            }
+         }
+         | expresion MENORIGUAL expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNodeRegistro("menorigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo <= $3.nodo;
+            }         
+         }
+         | expresion MAYORIGUAL expresion{
+            if (strcmp($1.tipo, "string") == 0 || strcmp($3.tipo, "string") == 0){
+               printf("Error en linea %d: No se pueden hacer operaciones racionales con tipos string\n",(yylineno-1));
+               exit(1);
+            }
+            else{
+               $$.tipo = "bool";
+               $$.nodo = createASTNodeRegistro("mayorigual", -1, -1, $1.nodo, $3.nodo);
+               $$.valFloat = $1.nodo >= $3.nodo;
             }
          }
       ;

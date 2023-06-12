@@ -46,6 +46,8 @@ mientras "mientras"
 "<" return MENOR;
 ">" return MAYOR;
 "!=" return DIFERENTE;
+"<=" return MENORIGUAL;
+">=" return MAYORIGUAL;
 
 "+" return '+';
 "-" return '-';
