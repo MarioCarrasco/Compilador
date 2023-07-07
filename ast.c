@@ -9,6 +9,8 @@ bool regstrosDisponiblesF[31] = {true, true, true, true, true, true, true, true,
 // en este aray vamos a almacenar los valores que posteriormente habrá que inicializar en MIPS
 float varDeclarar[31][3]; // almacenamos el numVar de todo lo que queremos declarar y el valor float
 int sigVar = 0;
+int numEtiquetaTemp = 0; // numero de etiqueta que va incrementando para que estas no se repitan en la cracion de bucles y sentencias si sino
+int numEtiqueta = 0; // numero de etiqueta
 
 //estructura de los nodos
 struct ASTNode{
@@ -237,11 +239,13 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "potencia") == 0) { // NO ES REQUISITO
+        valor = generarCodigoIntermedio(node->left) ^ generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
+        printf("valor de la potencia: %f\n", valor);
         printf("%d\n",node->left->registro);
         printf("%d\n",node->right->registro);
-        fprintf(yyout, "POTENCIA NI\n");
+        fprintf(yyout, "POTENCIA ASM\n");
     }
     else if (strcmp(node->type, "si") == 0) {
         printf("entra en ");
@@ -251,6 +255,14 @@ float generarCodigoIntermedio(struct ASTNode* node) {
     else if (strcmp(node->type, "mientras") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
+        numEtiquetaTemp = numEtiqueta;
+        numEtiqueta = numEtiqueta + 1;
+
+        valor = generarCodigoIntermedio(node->left); // se evalua la operacion booleana
+        fprintf(yyout, "bc1t etiqueta%d:\n", numEtiquetaTemp);
+        fprintf(yyout, "etiqueta%d:\n", numEtiquetaTemp);
+        generarCodigoIntermedio(node->right); // se evalua el contenido del bucle mientras
+
         fprintf(yyout, "TODO: MIENTRAS\n");
     }
     else { // ERROR

@@ -46,10 +46,12 @@
      SI = 263,
      FIN = 264,
      MIENTRAS = 265,
-     DIFERENTE = 266,
-     MAYOR = 267,
-     MENOR = 268,
-     IGUALIGUAL = 269
+     MAYORIGUAL = 266,
+     MENORIGUAL = 267,
+     DIFERENTE = 268,
+     MAYOR = 269,
+     MENOR = 270,
+     IGUALIGUAL = 271
    };
 #endif
 
@@ -77,7 +79,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 81 "compilador.tab.h"
+#line 83 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
