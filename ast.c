@@ -104,7 +104,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         generarCodigoIntermedio(node->right);
     }
     else if (strcmp(node->type, "diferente") == 0) {
-        v = eval(a->l) != eval(a->r);
+        valor = generarCodigoIntermedio(node->left) != generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         fprintf(yyout, " c.eq.s $f%d, $f%d\n", node->right->registro, node->left->registro);
@@ -115,12 +115,12 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "igualigual") == 0) {
-        v = eval(a->l) == eval(a->r);
+        valor = generarCodigoIntermedio(node->left) == generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         printf("%d\n",node->left->registro);
         printf("%d\n",node->right->registro);
-        fprintf(yyout, " c.eq.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+        fprintf(yyout, "c.eq.s $f%d, $f%d\n", node->right->registro, node->left->registro);
 
         // se ve si son iguales y con bc1t "etiqueta", si el flag de condicion es 1 (true), se entra en la etiqueta
         
@@ -128,7 +128,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "menor") == 0) {
-        v = eval(a->l) < eval(a->r);
+        valor = generarCodigoIntermedio(node->left) < generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         fprintf(yyout, "c.lt.s $f%d, $f%d\n", node->left->registro, node->right->registro);
@@ -136,7 +136,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "mayor") == 0) {
-        v = eval(a->l) > eval(a->r);
+        valor = generarCodigoIntermedio(node->left) > generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         printf("%d\n",node->left->registro);
@@ -146,7 +146,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "menorigual") == 0) {
-        v = eval(a->l) <= eval(a->r);
+        valor = generarCodigoIntermedio(node->left) <= generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         fprintf(yyout, "c.le.s $f%d, $f%d\n", node->left->registro, node->right->registro);
@@ -154,7 +154,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "mayorigual") == 0) {
-        v = eval(a->l) >= eval(a->r);
+        valor = generarCodigoIntermedio(node->left) >= generarCodigoIntermedio(node->right);
         printf("entra en ");
         printf("%s\n",node->type);
         printf("%d\n",node->left->registro);
@@ -175,11 +175,12 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         valor = node->valFloat;
         fprintf(yyout, "lwc1 $f%d, var%d\n", node->registro, node->numVar);
     }
-    else if (strcmp(node->type, "asignacion") == 0) { // nueva variable
+    else if (strcmp(node->type, "asignacion") == 0) { // nueva variable o asignacion
         printf("entra en ");
         printf("%s\n",node->type);
         valor = generarCodigoIntermedio(node->right);
         printf("RESULTADO OPERACION EN ASIGNACION: %f\n",valor);
+        //fprintf(yyout, "mov.s $f%d, $f%d\n", node->right->registro, node->left->registro);
         node->valFloat = valor;
         printf("Registro de almacenamiento del resultado: %d\n",node->registro);
         liberarRegistro(node->right);
@@ -239,7 +240,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         liberarRegistro(node->right);
     }
     else if (strcmp(node->type, "potencia") == 0) { // NO ES REQUISITO
-        valor = generarCodigoIntermedio(node->left) ^ generarCodigoIntermedio(node->right);
+        valor = pow(generarCodigoIntermedio(node->left), generarCodigoIntermedio(node->right));
         printf("entra en ");
         printf("%s\n",node->type);
         printf("valor de la potencia: %f\n", valor);
@@ -250,20 +251,50 @@ float generarCodigoIntermedio(struct ASTNode* node) {
     else if (strcmp(node->type, "si") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
-        fprintf(yyout, "TODO: SI\n");
+
+        numEtiquetaTemp = numEtiqueta;
+        numEtiqueta = numEtiqueta + 1;
+
+        valor = generarCodigoIntermedio(node->left); // condicion
+        printf("Condicion del if: %f\n", valor);
+        fprintf(yyout, "bc1f etiq%d\n", numEtiquetaTemp);
+
+        // Codigo dentro del if
+        generarCodigoIntermedio(node->right);
+
+        // Etiqueta de salida del if
+        fprintf(yyout, "etiq%d:\n", numEtiquetaTemp);
     }
     else if (strcmp(node->type, "mientras") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
         numEtiquetaTemp = numEtiqueta;
-        numEtiqueta = numEtiqueta + 1;
+        numEtiqueta = numEtiqueta + 2;
 
-        valor = generarCodigoIntermedio(node->left); // se evalua la operacion booleana
-        fprintf(yyout, "bc1t etiqueta%d:\n", numEtiquetaTemp);
+        
+        // Saltar a la etiqueta del comienzo del WHILE
         fprintf(yyout, "etiqueta%d:\n", numEtiquetaTemp);
-        generarCodigoIntermedio(node->right); // se evalua el contenido del bucle mientras
+        valor = generarCodigoIntermedio(node->left); // se evalua la operacion booleana
+        printf("Condicion del while: %f\n", valor);
+        fprintf(yyout, "bc1f etiqueta%d\n", numEtiquetaTemp + 1);
 
-        fprintf(yyout, "TODO: MIENTRAS\n");
+        generarCodigoIntermedio(node->right); // el resto del codigo del while
+
+        // Saltar a la etiqueta del comienzo del while
+        fprintf(yyout, "j etiqueta%d\n", numEtiquetaTemp);
+        // Etiqueta que se usa para salir del while
+        fprintf(yyout, "etiqueta%d:\n", numEtiquetaTemp + 1);
+
+    }
+    else if (strcmp(node->type, "imprimir") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+        //  Resuelve la operación evaluandola
+        generarCodigoIntermedio(node->left);
+        printf("Resultado de la impresion por pantalla: %f", generarCodigoIntermedio(node->left));
+        // Imprime el resultado almacenado en al registro de
+        metodoImprimir(node->left);
+
     }
     else { // ERROR
         printf("entra en default ");
@@ -276,6 +307,19 @@ float generarCodigoIntermedio(struct ASTNode* node) {
     return valor;
 }
 
+void metodoImprimir(struct ASTNode* node){
+    fprintf(yyout, "li $v0, 2\n");
+    // Mover del registro n al registro 12
+    fprintf(yyout, "add.s $f12, $f31, $f%d\n", node->registro);
+    // Llamada al sistema
+    fprintf(yyout, "syscall\n");
+
+    // Salto de línea
+    fprintf(yyout, "li $v0, 4\n");
+    fprintf(yyout, "la $a0, newLine\n");
+    fprintf(yyout, "syscall\n");
+}
+
 void iniciarGCI(struct ASTNode* node) {
     // imprimimos el .data con las variables que se quieren declarar y llamamos al método con el que recorreremos el AST
     fprintf(yyout, ".data\n");
@@ -285,7 +329,9 @@ void iniciarGCI(struct ASTNode* node) {
             fprintf(yyout, "var%d: .float %f\n", (int)varDeclarar[i][1], varDeclarar[i][0]);
         }
     }
-
+    fprintf(yyout, "newLine: .asciiz \"\\n\"\n");
+    fprintf(yyout, "zero_f: .float 0.0\n"); // variable con cero en float para imprimir
     fprintf(yyout, "\n.text\n");
+    fprintf(yyout, "lwc1 $f31, zero_f\n");
     float result = generarCodigoIntermedio(node);
 }

@@ -1,6 +1,7 @@
 %{
 #include <ctype.h>
 #include <stdio.h>
+#include <math.h>
 #include "tabla_simbolos.h"
 #include "ast.c"
 
@@ -31,6 +32,7 @@ int num_simbolos = 0;
 %token <sVal> COMENTARIO COMENTARIOL
 %token <sVal> SI FIN
 %token <sVal> MIENTRAS
+%token <sVal> IMPRIMIR
 
 %type <valores> sentencia
 %type <valores> expresion
@@ -38,6 +40,7 @@ int num_simbolos = 0;
 %type <valores> expr_booleanas
 %type <valores> sentencia_si
 %type <valores> bucle_while
+%type <valores> imprimir
 
 %left IGUALIGUAL MENOR MAYOR DIFERENTE MENORIGUAL MAYORIGUAL
 %left '(' ')'
@@ -316,12 +319,12 @@ expresion: ENTERO { $$.valInt = $1;
                else if (strcmp($1.tipo, $3.tipo) == 0){ // si los tipos son el mismo
                   if (strcmp($1.tipo, "entero") == 0){
                      printf("En la linea %d entra en la potencia de enteros: %d ^ %d\n", (yylineno-1), $1.valInt, $3.valInt);
-                     $$.valFloat = $1.valInt ^ $3.valInt;
-                     $$.valInt = $1.valInt ^ $3.valInt;
+                     $$.valFloat = pow($1.valInt, $3.valInt);
+                     $$.valInt = pow($1.valInt, $3.valInt);
                   }
                   else if (strcmp($1.tipo, "decimal") == 0){
                      printf("En la linea %d entra en la potencia de decimales: %f ^ %f\n", (yylineno-1), $1.valFloat, $3.valFloat);
-                     $$.valFloat = $1.valFloat ^ $3.valFloat;
+                     $$.valFloat = pow($1.valFloat, $3.valFloat);
                   }
                   else{
                      printf("Error en linea %s: Error de tipos\n",(yylineno-1));
@@ -331,11 +334,11 @@ expresion: ENTERO { $$.valInt = $1;
                else {
                   if (strcmp($1.tipo, "entero") == 0 && strcmp($3.tipo, "decimal") == 0){
                      printf("En la linea %d entra en la potencia: %d ^ %f\n", (yylineno-1), $1.valInt, $3.valFloat);
-                     $$.valFloat = $1.valInt ^ $3.valFloat;
+                     $$.valFloat = pow($1.valInt, $3.valFloat);
                   }
                   else if (strcmp($1.tipo, "decimal") == 0 && strcmp($3.tipo, "entero") == 0){
                      printf("En la linea %d entra en la potencia: %f ^ %d\n", (yylineno-1), $1.valFloat, $3.valInt);
-                     $$.valFloat = $1.valFloat ^ $3.valInt;
+                     $$.valFloat = pow($1.valFloat, $3.valInt);
                   }
                   else{
                      printf("Error en linea %s: Error de tipos\n",(yylineno-1));
@@ -348,6 +351,7 @@ expresion: ENTERO { $$.valInt = $1;
          | expr_booleanas { $$.nodo = $1.nodo; }
          | sentencia_si { $$.nodo = $1.nodo; }
          | bucle_while { $$.nodo = $1.nodo; }
+         | imprimir { $$.nodo = $1.nodo; }
       ;
 
 expr_booleanas: expresion MAYOR expresion{
@@ -423,6 +427,8 @@ sentencia_si: SI '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("s
 
 bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("mientras", -1, -1, $3.nodo, $5.nodo); }
       ;
+
+imprimir: IMPRIMIR '('sentencia')' { $$.nodo = createASTNode("imprimir", -1, -1, $3.nodo, NULL); }
 
 
 %%

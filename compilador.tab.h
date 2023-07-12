@@ -46,12 +46,13 @@
      SI = 263,
      FIN = 264,
      MIENTRAS = 265,
-     MAYORIGUAL = 266,
-     MENORIGUAL = 267,
-     DIFERENTE = 268,
-     MAYOR = 269,
-     MENOR = 270,
-     IGUALIGUAL = 271
+     IMPRIMIR = 266,
+     MAYORIGUAL = 267,
+     MENORIGUAL = 268,
+     DIFERENTE = 269,
+     MAYOR = 270,
+     MENOR = 271,
+     IGUALIGUAL = 272
    };
 #endif
 
@@ -62,7 +63,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 14 "compilador.y"
+#line 15 "compilador.y"
 
    int vInt;
    char* sVal;
@@ -79,7 +80,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 83 "compilador.tab.h"
+#line 84 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

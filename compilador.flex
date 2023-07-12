@@ -16,8 +16,8 @@ letras [a-zA-Z]+
 entero [0-9]+
 decimal [0-9]*\.[0-9]*
 variable (_*{letras}|_+{entero})({letras}|{entero}|_)*
-comentario \#[a-zA-Z0-9 ]*\n
-comentarioLineas [a-zA-Z0-9\n ]*
+comentario \#[a-zA-Z0-9\(\)\+\*\-\/\=\<\> ]*\n
+comentarioLineas [a-zA-Z0-9\(\)\+\*\-\/\=\<\>\n ]*
 
 si "si"
 fin "fin"
@@ -25,6 +25,7 @@ parentesisIzq [\(]
 parentesisDer [\)]
 
 mientras "mientras"
+imprimir "imprimir"
 
 %%
 
@@ -33,6 +34,7 @@ mientras "mientras"
 {si} {yylval.sVal = strdup(yytext); return SI;}
 {fin} {yylval.sVal = strdup(yytext); return FIN;}
 {mientras} {yylval.sVal = strdup(yytext); return MIENTRAS;}
+{imprimir} {yylval.sVal = strdup(yytext); return IMPRIMIR;};
 
 {decimal} {yylval.fVal = atof(yytext); return DECIMAL;}
 {entero} {yylval.vInt = atoi(yytext); return ENTERO;}
