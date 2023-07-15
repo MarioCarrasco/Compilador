@@ -44,15 +44,17 @@
      COMENTARIO = 261,
      COMENTARIOL = 262,
      SI = 263,
-     FIN = 264,
-     MIENTRAS = 265,
-     IMPRIMIR = 266,
-     MAYORIGUAL = 267,
-     MENORIGUAL = 268,
-     DIFERENTE = 269,
-     MAYOR = 270,
-     MENOR = 271,
-     IGUALIGUAL = 272
+     OSI = 264,
+     SINO = 265,
+     FIN = 266,
+     MIENTRAS = 267,
+     IMPRIMIR = 268,
+     MAYORIGUAL = 269,
+     MENORIGUAL = 270,
+     DIFERENTE = 271,
+     MAYOR = 272,
+     MENOR = 273,
+     IGUALIGUAL = 274
    };
 #endif
 
@@ -80,7 +82,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 84 "compilador.tab.h"
+#line 86 "compilador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

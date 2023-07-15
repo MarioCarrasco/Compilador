@@ -1,3 +1,2 @@
 var=0
-si (var>0) var=1 fin
-imprimir(var)
+si (var==1) imprimir(1) sino imprimir(2) fin

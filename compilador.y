@@ -30,7 +30,7 @@ int num_simbolos = 0;
 %token <vInt> ENTERO
 %token <fVal> DECIMAL
 %token <sVal> COMENTARIO COMENTARIOL
-%token <sVal> SI FIN
+%token <sVal> SI OSI SINO FIN
 %token <sVal> MIENTRAS
 %token <sVal> IMPRIMIR
 
@@ -74,6 +74,9 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                   printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
                   printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valor);
                   num_simbolos++;
+
+                  struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
+                  $$.nodo = createASTNodeRegistro("declaracion", -1, -1, temp, $3.nodo);
                }
                else{ // exixte simbolo, se actualiza
                   printf("Actualizamos simbolo\n"); 
@@ -87,8 +90,9 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                         printf("Valor del simbolo actualizado: %d\n", tabla_simbolos[i].valor);
                      }
                   }
+                  struct ASTNode* temp = createASTNodeRegistro("variable", -1, -1, NULL, NULL);
+                  $$.nodo = createASTNodeRegistro("asignacion", -1, -1, temp, $3.nodo);
                }
-               // crear nodo?
             }
             else if (strcmp($3.tipo, "decimal") == 0){
                nuevoTipo = "decimal";
@@ -101,6 +105,9 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                   printf("Tipo del nuevo simbolo: %s\n", tabla_simbolos[num_simbolos].tipo);
                   printf("Valor del nuevo simbolo: %d\n", tabla_simbolos[num_simbolos].valorFloat);
                   num_simbolos++;
+
+                  struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
+                  $$.nodo = createASTNodeRegistro("declaracion", -1, -1, temp, $3.nodo);
                }
                else{ // exixte simbolo, se actualiza
                   printf("Actualizamos simbolo\n"); 
@@ -114,11 +121,10 @@ sentencias: expresion { $$.nodo = $1.nodo; }
                         printf("Valor del simbolo actualizado: %f\n", tabla_simbolos[i].valorFloat);
                      }
                   }
+                  struct ASTNode* temp = createASTNodeRegistro("variable", -1, -1, NULL, NULL);
+                  $$.nodo = createASTNodeRegistro("asignacion", -1, -1, temp, $3.nodo);
                }
             }
-
-            struct ASTNode* temp = createASTNode("variable", -1, -1, NULL, NULL);
-            $$.nodo = createASTNodeRegistro("asignacion", -1, -1, temp, $3.nodo);
          }
       ;
 
@@ -423,6 +429,7 @@ expr_booleanas: expresion MAYOR expresion{
       ;
 
 sentencia_si: SI '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("si", -1, -1, $3.nodo, $5.nodo); }
+         | SI '('expr_booleanas')' sentencia SINO sentencia FIN { $$.nodo = createASTNodeSino("sino", -1, -1, $3.nodo, $5.nodo, $7.nodo); }
       ;
 
 bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("mientras", -1, -1, $3.nodo, $5.nodo); }

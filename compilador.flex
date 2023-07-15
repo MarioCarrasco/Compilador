@@ -20,6 +20,8 @@ comentario \#[a-zA-Z0-9\(\)\+\*\-\/\=\<\> ]*\n
 comentarioLineas [a-zA-Z0-9\(\)\+\*\-\/\=\<\>\n ]*
 
 si "si"
+osi "osi"
+sino "sino"
 fin "fin"
 parentesisIzq [\(]
 parentesisDer [\)]
@@ -32,6 +34,8 @@ imprimir "imprimir"
 {parentesisIzq} return '(';
 {parentesisDer} return ')';
 {si} {yylval.sVal = strdup(yytext); return SI;}
+{sino} {yylval.sVal = strdup(yytext); return SINO;}
+{osi} {yylval.sVal = strdup(yytext); return OSI;}
 {fin} {yylval.sVal = strdup(yytext); return FIN;}
 {mientras} {yylval.sVal = strdup(yytext); return MIENTRAS;}
 {imprimir} {yylval.sVal = strdup(yytext); return IMPRIMIR;};

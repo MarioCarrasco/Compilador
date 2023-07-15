@@ -1,3 +1,8 @@
+Terminals unused in grammar
+
+   OSI
+
+
 Grammar
 
     0 $accept: S $end
@@ -33,17 +38,18 @@ Grammar
    25               | expresion MAYORIGUAL expresion
 
    26 sentencia_si: SI '(' expr_booleanas ')' sentencia FIN
+   27             | SI '(' expr_booleanas ')' sentencia SINO sentencia FIN
 
-   27 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN
+   28 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN
 
-   28 imprimir: IMPRIMIR '(' sentencia ')'
+   29 imprimir: IMPRIMIR '(' sentencia ')'
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 26 27 28
-')' (41) 26 27 28
+'(' (40) 26 27 28 29
+')' (41) 26 27 28 29
 '*' (42) 13
 '+' (43) 11
 '-' (45) 12
@@ -56,39 +62,41 @@ ENTERO (259) 8
 DECIMAL (260) 9
 COMENTARIO (261) 5
 COMENTARIOL (262) 6
-SI (263) 26
-FIN (264) 26 27
-MIENTRAS (265) 27
-IMPRIMIR (266) 28
-MAYORIGUAL (267) 25
-MENORIGUAL (268) 24
-DIFERENTE (269) 23
-MAYOR (270) 20
-MENOR (271) 21
-IGUALIGUAL (272) 22
+SI (263) 26 27
+OSI (264)
+SINO (265) 27
+FIN (266) 26 27 28
+MIENTRAS (267) 28
+IMPRIMIR (268) 29
+MAYORIGUAL (269) 25
+MENORIGUAL (270) 24
+DIFERENTE (271) 23
+MAYOR (272) 20
+MENOR (273) 21
+IGUALIGUAL (274) 22
 
 
 Nonterminals, with rules where they appear
 
-$accept (26)
+$accept (28)
     on left: 0
-S (27)
+S (29)
     on left: 1, on right: 0
-sentencia (28)
-    on left: 2 3, on right: 1 3 26 27 28
-sentencias (29)
+sentencia (30)
+    on left: 2 3, on right: 1 3 26 27 28 29
+sentencias (31)
     on left: 4 5 6 7, on right: 2 3
-expresion (30)
+expresion (32)
     on left: 8 9 10 11 12 13 14 15 16 17 18 19, on right: 4 7 11 12
     13 14 15 20 21 22 23 24 25
-expr_booleanas (31)
-    on left: 20 21 22 23 24 25, on right: 16 26 27
-sentencia_si (32)
-    on left: 26, on right: 17
-bucle_while (33)
-    on left: 27, on right: 18
-imprimir (34)
-    on left: 28, on right: 19
+expr_booleanas (33)
+    on left: 20 21 22 23 24 25, on right: 16 26 27 28
+sentencia_si (34)
+    on left: 26 27, on right: 17
+bucle_while (35)
+    on left: 28, on right: 18
+imprimir (36)
+    on left: 29, on right: 19
 
 
 state 0
@@ -155,20 +163,21 @@ state 5
 state 6
 
    26 sentencia_si: SI . '(' expr_booleanas ')' sentencia FIN
+   27             | SI . '(' expr_booleanas ')' sentencia SINO sentencia FIN
 
     '('  shift, and go to state 18
 
 
 state 7
 
-   27 bucle_while: MIENTRAS . '(' expr_booleanas ')' sentencia FIN
+   28 bucle_while: MIENTRAS . '(' expr_booleanas ')' sentencia FIN
 
     '('  shift, and go to state 19
 
 
 state 8
 
-   28 imprimir: IMPRIMIR . '(' sentencia ')'
+   29 imprimir: IMPRIMIR . '(' sentencia ')'
 
     '('  shift, and go to state 20
 
@@ -290,6 +299,7 @@ state 17
 state 18
 
    26 sentencia_si: SI '(' . expr_booleanas ')' sentencia FIN
+   27             | SI '(' . expr_booleanas ')' sentencia SINO sentencia FIN
 
     VARIABLE  shift, and go to state 34
     ENTERO    shift, and go to state 2
@@ -307,7 +317,7 @@ state 18
 
 state 19
 
-   27 bucle_while: MIENTRAS '(' . expr_booleanas ')' sentencia FIN
+   28 bucle_while: MIENTRAS '(' . expr_booleanas ')' sentencia FIN
 
     VARIABLE  shift, and go to state 34
     ENTERO    shift, and go to state 2
@@ -325,7 +335,7 @@ state 19
 
 state 20
 
-   28 imprimir: IMPRIMIR '(' . sentencia ')'
+   29 imprimir: IMPRIMIR '(' . sentencia ')'
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -625,6 +635,7 @@ state 37
 
    16 expresion: expr_booleanas .
    26 sentencia_si: SI '(' expr_booleanas . ')' sentencia FIN
+   27             | SI '(' expr_booleanas . ')' sentencia SINO sentencia FIN
 
     ')'  shift, and go to state 51
 
@@ -634,7 +645,7 @@ state 37
 state 38
 
    16 expresion: expr_booleanas .
-   27 bucle_while: MIENTRAS '(' expr_booleanas . ')' sentencia FIN
+   28 bucle_while: MIENTRAS '(' expr_booleanas . ')' sentencia FIN
 
     ')'  shift, and go to state 52
 
@@ -644,7 +655,7 @@ state 38
 state 39
 
     3 sentencia: sentencia . sentencias
-   28 imprimir: IMPRIMIR '(' sentencia . ')'
+   29 imprimir: IMPRIMIR '(' sentencia . ')'
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -915,6 +926,7 @@ state 50
 state 51
 
    26 sentencia_si: SI '(' expr_booleanas ')' . sentencia FIN
+   27             | SI '(' expr_booleanas ')' . sentencia SINO sentencia FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -936,7 +948,7 @@ state 51
 
 state 52
 
-   27 bucle_while: MIENTRAS '(' expr_booleanas ')' . sentencia FIN
+   28 bucle_while: MIENTRAS '(' expr_booleanas ')' . sentencia FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -958,15 +970,16 @@ state 52
 
 state 53
 
-   28 imprimir: IMPRIMIR '(' sentencia ')' .
+   29 imprimir: IMPRIMIR '(' sentencia ')' .
 
-    $default  reduce using rule 28 (imprimir)
+    $default  reduce using rule 29 (imprimir)
 
 
 state 54
 
     3 sentencia: sentencia . sentencias
    26 sentencia_si: SI '(' expr_booleanas ')' sentencia . FIN
+   27             | SI '(' expr_booleanas ')' sentencia . SINO sentencia FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -974,7 +987,8 @@ state 54
     COMENTARIO   shift, and go to state 4
     COMENTARIOL  shift, and go to state 5
     SI           shift, and go to state 6
-    FIN          shift, and go to state 56
+    SINO         shift, and go to state 56
+    FIN          shift, and go to state 57
     MIENTRAS     shift, and go to state 7
     IMPRIMIR     shift, and go to state 8
 
@@ -989,7 +1003,7 @@ state 54
 state 55
 
     3 sentencia: sentencia . sentencias
-   27 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia . FIN
+   28 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia . FIN
 
     VARIABLE     shift, and go to state 1
     ENTERO       shift, and go to state 2
@@ -997,7 +1011,7 @@ state 55
     COMENTARIO   shift, and go to state 4
     COMENTARIOL  shift, and go to state 5
     SI           shift, and go to state 6
-    FIN          shift, and go to state 57
+    FIN          shift, and go to state 58
     MIENTRAS     shift, and go to state 7
     IMPRIMIR     shift, and go to state 8
 
@@ -1011,13 +1025,65 @@ state 55
 
 state 56
 
+   27 sentencia_si: SI '(' expr_booleanas ')' sentencia SINO . sentencia FIN
+
+    VARIABLE     shift, and go to state 1
+    ENTERO       shift, and go to state 2
+    DECIMAL      shift, and go to state 3
+    COMENTARIO   shift, and go to state 4
+    COMENTARIOL  shift, and go to state 5
+    SI           shift, and go to state 6
+    MIENTRAS     shift, and go to state 7
+    IMPRIMIR     shift, and go to state 8
+
+    sentencia       go to state 59
+    sentencias      go to state 11
+    expresion       go to state 12
+    expr_booleanas  go to state 13
+    sentencia_si    go to state 14
+    bucle_while     go to state 15
+    imprimir        go to state 16
+
+
+state 57
+
    26 sentencia_si: SI '(' expr_booleanas ')' sentencia FIN .
 
     $default  reduce using rule 26 (sentencia_si)
 
 
-state 57
+state 58
 
-   27 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN .
+   28 bucle_while: MIENTRAS '(' expr_booleanas ')' sentencia FIN .
 
-    $default  reduce using rule 27 (bucle_while)
+    $default  reduce using rule 28 (bucle_while)
+
+
+state 59
+
+    3 sentencia: sentencia . sentencias
+   27 sentencia_si: SI '(' expr_booleanas ')' sentencia SINO sentencia . FIN
+
+    VARIABLE     shift, and go to state 1
+    ENTERO       shift, and go to state 2
+    DECIMAL      shift, and go to state 3
+    COMENTARIO   shift, and go to state 4
+    COMENTARIOL  shift, and go to state 5
+    SI           shift, and go to state 6
+    FIN          shift, and go to state 60
+    MIENTRAS     shift, and go to state 7
+    IMPRIMIR     shift, and go to state 8
+
+    sentencias      go to state 22
+    expresion       go to state 12
+    expr_booleanas  go to state 13
+    sentencia_si    go to state 14
+    bucle_while     go to state 15
+    imprimir        go to state 16
+
+
+state 60
+
+   27 sentencia_si: SI '(' expr_booleanas ')' sentencia SINO sentencia FIN .
+
+    $default  reduce using rule 27 (sentencia_si)

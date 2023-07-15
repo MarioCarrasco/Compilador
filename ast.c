@@ -22,6 +22,7 @@ struct ASTNode{
     char* type;             // Tipo de nodo (operador, identificador, número, etc)
     struct ASTNode* left;   // Puntero al hijo izquierdo
     struct ASTNode* right;  // Puntero al hijo derecho
+    struct ASTNode* mid;  // Puntero al hijo mediano solo usado para sino
 };
 
 int siguienteRegistroLibre(){
@@ -84,6 +85,18 @@ struct ASTNode* createASTNodeRegistroDeclarar(char* type, int valInt, float valF
     node->type = type;
     node->left = left;
     node->right = right;
+    return node;
+}
+
+struct ASTNode* createASTNodeSino(char* type, int valInt, float valFloat/*, char* valStr*/, struct ASTNode* left, struct ASTNode* right, struct ASTNode* mid) {
+    struct ASTNode* node = malloc(sizeof(struct ASTNode));
+    node->valInt = valInt;
+    node->valFloat = valFloat;
+    //node->valStr = valStr;
+    node->type = type;
+    node->left = left;
+    node->right = right;
+    node->mid = mid;
     return node;
 }
 
@@ -180,7 +193,15 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         printf("%s\n",node->type);
         valor = generarCodigoIntermedio(node->right);
         printf("RESULTADO OPERACION EN ASIGNACION: %f\n",valor);
-        //fprintf(yyout, "mov.s $f%d, $f%d\n", node->right->registro, node->left->registro);
+        fprintf(yyout, "mov.s $f%d, $f%d\n", node->left->registro, node->right->registro);
+        node->valFloat = valor;
+        printf("Registro de almacenamiento del resultado: %d\n",node->registro);
+        liberarRegistro(node->right);
+    }
+    else if (strcmp(node->type, "declaracion") == 0) { // nueva variable o asignacion
+        printf("entra en ");
+        printf("%s\n",node->type);
+        valor = generarCodigoIntermedio(node->right);
         node->valFloat = valor;
         printf("Registro de almacenamiento del resultado: %d\n",node->registro);
         liberarRegistro(node->right);
@@ -264,6 +285,29 @@ float generarCodigoIntermedio(struct ASTNode* node) {
 
         // Etiqueta de salida del if
         fprintf(yyout, "etiq%d:\n", numEtiquetaTemp);
+    }
+    else if (strcmp(node->type, "sino") == 0) {
+        printf("entra en ");
+        printf("%s\n",node->type);
+
+        numEtiquetaTemp = numEtiqueta;
+        numEtiqueta = numEtiqueta + 2;
+
+        valor = generarCodigoIntermedio(node->left); // condicion
+        printf("Condicion del if: %f\n", valor);
+        fprintf(yyout, "bc1f etiq%d\n", numEtiquetaTemp);
+
+        // Codigo dentro del if
+        generarCodigoIntermedio(node->right);
+        fprintf(yyout, "j etiq%d\n", numEtiquetaTemp+1); // si se ha entrado en el if se salta el codigo del else
+
+        // Etiqueta de salida del if
+        fprintf(yyout, "etiq%d:\n", numEtiquetaTemp);
+
+        // Codigo del sino
+        generarCodigoIntermedio(node->mid);
+        fprintf(yyout, "etiq%d:\n", numEtiquetaTemp+1);
+
     }
     else if (strcmp(node->type, "mientras") == 0) {
         printf("entra en ");
