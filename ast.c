@@ -175,7 +175,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         fprintf(yyout, "c.le.s $f%d, $f%d\n", node->right->registro, node->left->registro);
         liberarRegistro(node->left);
         liberarRegistro(node->right);
-    }
+    } 
     else if (strcmp(node->type, "decimal") == 0) {
         printf("entra en ");
         printf("%s\n",node->type);
@@ -335,7 +335,7 @@ float generarCodigoIntermedio(struct ASTNode* node) {
         printf("%s\n",node->type);
         //  Resuelve la operación evaluandola
         generarCodigoIntermedio(node->left);
-        printf("Resultado de la impresion por pantalla: %f", generarCodigoIntermedio(node->left));
+        printf("Resultado de la impresion por pantalla: %f\n", generarCodigoIntermedio(node->left));
         // Imprime el resultado almacenado en al registro de
         metodoImprimir(node->left);
 

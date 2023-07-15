@@ -430,6 +430,12 @@ expr_booleanas: expresion MAYOR expresion{
 
 sentencia_si: SI '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("si", -1, -1, $3.nodo, $5.nodo); }
          | SI '('expr_booleanas')' sentencia SINO sentencia FIN { $$.nodo = createASTNodeSino("sino", -1, -1, $3.nodo, $5.nodo, $7.nodo); }
+         | SI '('expr_booleanas')' sentencia osis FIN { printf("si con osi") } // No se usa
+      ;
+osis: osi {printf("osi\n")}
+         | osis osi {printf("mas de un osi\n")}
+      ;
+osi: OSI '('expr_booleanas')' sentencia {printf("sentencia osi")}
       ;
 
 bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNode("mientras", -1, -1, $3.nodo, $5.nodo); }

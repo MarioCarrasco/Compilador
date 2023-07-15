@@ -1,2 +1,6 @@
-var=0
-si (var==1) imprimir(1) sino imprimir(2) fin
+var=11
+mientras (var<=10)
+    var = 1+var
+    imprimir(var)
+fin
+imprimir(var)
