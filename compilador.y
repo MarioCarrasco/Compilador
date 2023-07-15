@@ -442,6 +442,7 @@ bucle_while: MIENTRAS '('expr_booleanas')' sentencia FIN { $$.nodo = createASTNo
       ;
 
 imprimir: IMPRIMIR '('sentencia')' { $$.nodo = createASTNode("imprimir", -1, -1, $3.nodo, NULL); }
+      ;
 
 
 %%
