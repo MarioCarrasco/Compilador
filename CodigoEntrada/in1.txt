@@ -1,5 +1,0 @@
-# comentario de una linea
-var=0
-si (var==0) imprimir(1) sino imprimir(2) fin
-/*comentario de varias
-lineas*/

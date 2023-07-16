@@ -1,0 +1,9 @@
+var=0
+si (var==0)
+    imprimir(1)
+    /*Prueba de comentario
+    dentro de un if*/
+sino
+    imprimir(2)
+fin
+

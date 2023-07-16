@@ -1,0 +1,6 @@
+#comentario de prueba
+var1=4
+var2=8.4
+imprimir(var1+var2)
+/*prueba
+comentario lineas*/
